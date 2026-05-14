@@ -1,76 +1,48 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.1.2"
-}
-
-archivesBaseName = "${rootProject.archivesBaseName}-${project.name}"
-
-architectury {
-    platformSetupLoomIde()
-    fabric()
-}
-
-configurations {
-    common
-    shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
-    compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
-    developmentFabric.extendsFrom common
+    id 'multiloader-loader'
+    id 'fabric-loom'
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
-    modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
-    modApi "gg.moonflower:pollen-fabric:${rootProject.pollen_version}"
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.layered {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${parchment_minecraft}:${parchment_version}@zip")
+    }
 
-    include(implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:${rootProject.mixinextras_version}")))
+    // EMI
+    modRuntimeOnly "dev.emi:emi-fabric:${emi_version}"
 
-//    clientImplementation(project(":common").sourceSets.client.output)
-//    shadowCommon(sourceSets.client.output)
+    // Cloth Config
+    modImplementation "me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version}"
+    modImplementation "com.terraformersmc:modmenu:${mod_menu_version}"
 
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 }
 
-processResources {
-    inputs.property "mod_id", project.mod_id
-    inputs.property "mod_version", project.mod_version
-    inputs.property "mod_name", project.mod_name
-    inputs.property "mod_description", project.mod_description
-    inputs.property "archives_base_name", project.archives_base_name
+loom {
+    def aw = project(':common').file("src/main/resources/${mod_id}.accesswidener")
+    if (aw.exists()) {
+        accessWidenerPath.set(aw)
+    }
 
-    inputs.property "minecraft_version", project.minecraft_version
-
-    filesMatching(["fabric.mod.json"]) {
-        expand "mod_id": project.mod_id,
-                "mod_version": project.mod_version,
-                "mod_name": project.mod_name,
-                "mod_description": project.mod_description,
-                "archives_base_name": project.archives_base_name,
-                "minecraft_version": project.minecraft_version
+    runs {
+        client {
+            client()
+            setConfigName('Fabric Client')
+            ideConfigGenerated(true)
+            runDir('runs/client')
+        }
+        server {
+            server()
+            setConfigName('Fabric Server')
+            ideConfigGenerated(true)
+            runDir('runs/server')
+        }
     }
 }
 
-shadowJar {
-    exclude "architectury.common.json"
-
-    configurations = [project.configurations.shadowCommon]
-    archiveClassifier = "dev-shadow"
-}
-
-remapJar {
-    injectAccessWidener = true
-    input.set shadowJar.archiveFile
-    dependsOn shadowJar
-    archiveClassifier = null
-}
-
-jar {
-    archiveClassifier = "dev"
-}
-
-components.java {
-    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
-        skip()
-    }
+publishMods {
+    file = tasks.named("remapJar").flatMap { it.archiveFile }
 }

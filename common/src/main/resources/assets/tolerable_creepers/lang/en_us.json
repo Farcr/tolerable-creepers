@@ -1,0 +1,12 @@
+{
+  "config.tolerable_creepers.title": "Tolerable Creepers Config",
+  "config.tolerable_creepers.category.general": "General",
+  "block.tolerablecreepers.spore_barrel": "Spore Barrel",
+  "entity.tolerablecreepers.creeper_spores": "Creeper Spores",
+  "entity.tolerablecreepers.creepie": "Creepie",
+  "entity.tolerablecreepers.spore_barrel": "Spore Barrel",
+  "item.tolerablecreepers.creeper_spores": "Creeper Spores",
+  "item.tolerablecreepers.fire_bomb": "Fire Bomb",
+  "item.tolerablecreepers.mischief_arrow": "Mischief Arrow",
+  "item.tolerablecreepers.spore_bomb": "Spore Bomb"
+}

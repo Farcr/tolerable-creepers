@@ -1,38 +1,41 @@
 {
   "schemaVersion": 1,
   "id": "${mod_id}",
-  "version": "${mod_version}",
+  "version": "${version}",
   "name": "${mod_name}",
-  "description": "${mod_description}",
-  "icon": "${mod_id}.icon.png",
+  "description": "${description}",
   "authors": [
-    "Moonflower"
-  ],
-  "contributors": [
-    "Jackson",
-    "Ocelot"
+    "${mod_author}"
   ],
   "contact": {
-    "homepage": "https://www.moonflower.gg/",
-    "issues": "https://github.com/MoonflowerTeam/${archives_base_name}/issues",
-    "sources": "https://github.com/MoonflowerTeam/${archives_base_name}/"
+    "homepage": "https://github.com/evanbones/Tolerable-Creepers",
+    "sources": "https://github.com/evanbones/Tolerable-Creepers"
   },
-  "license": "GPLv3",
+  "license": "${license}",
+  "icon": "${mod_id}.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "gg.moonflower.tolerablecreepers.core.fabric.TolerableCreepersFabric"
+      "com.evandev.tolerable_creepers.TolerableCreepersFabric"
     ],
     "client": [
-      "gg.moonflower.tolerablecreepers.core.fabric.TolerableCreepersFabricClient"
+      "com.evandev.tolerable_creepers.TolerableCreepersFabricClient"
+    ],
+    "modmenu": [
+      "com.evandev.tolerable_creepers.compat.ModMenuIntegration"
+    ],
+    "fabric-datagen": [
+      "com.evandev.tolerable_creepers.datagen.TemplateDataGenerator"
     ]
   },
   "mixins": [
-    "${mod_id}-common.mixins.json"
+    "${mod_id}.mixins.json",
+    "${mod_id}.fabric.mixins.json"
   ],
   "depends": {
+    "fabricloader": ">=0.14",
     "fabric": "*",
-    "minecraft": "~${minecraft_version}",
-    "pollen": "2.x >=2.1"
+    "minecraft": "${minecraft_version}",
+    "java": ">=21"
   }
 }
