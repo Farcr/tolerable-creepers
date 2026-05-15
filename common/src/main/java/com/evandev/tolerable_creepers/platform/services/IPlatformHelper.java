@@ -1,5 +1,9 @@
 package com.evandev.tolerable_creepers.platform.services;
 
+import com.evandev.tolerable_creepers.platform.registry.RegistrationProvider;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+
 import java.nio.file.Path;
 
 public interface IPlatformHelper {
@@ -47,4 +51,6 @@ public interface IPlatformHelper {
      * @return True if on the client, false if on a dedicated server.
      */
     boolean isPhysicalClient();
+
+    <T> RegistrationProvider<T> createRegistrationProvider(ResourceKey<? extends Registry<T>> registry, String modId);
 }

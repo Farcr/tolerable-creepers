@@ -1,6 +1,6 @@
 package com.evandev.tolerable_creepers.common.block;
 
-import com.evandev.tolerable_creepers.core.mixin.FlowerPotBlockAccessor;
+import com.evandev.tolerable_creepers.core.mixin.accessor.FlowerPotBlockAccessor;
 import com.evandev.tolerable_creepers.core.registry.TCItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;

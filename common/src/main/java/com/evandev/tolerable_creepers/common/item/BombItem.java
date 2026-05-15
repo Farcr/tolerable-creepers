@@ -12,6 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class BombItem extends Item {
 
@@ -23,25 +24,25 @@ public abstract class BombItem extends Item {
     }
 
     @Override
-    public int getUseDuration(ItemStack arg) {
+    public int getUseDuration(@NotNull ItemStack stack, @NotNull LivingEntity entity) {
         return 72000;
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack arg) {
+    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack arg) {
         return UseAnim.BOW;
     }
 
     @Override
-    public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int remainingTicks) {
-        if (!entity.isShiftKeyDown() && this.getUseDuration(stack) - remainingTicks >= DEFAULT_THROW_TIME) {
+    public void onUseTick(@NotNull Level level, LivingEntity entity, @NotNull ItemStack stack, int remainingTicks) {
+        if (!entity.isShiftKeyDown() && this.getUseDuration(stack, entity) - remainingTicks >= DEFAULT_THROW_TIME) {
             entity.releaseUsingItem();
         }
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int remainingTicks) {
-        if (this.getUseDuration(stack) - remainingTicks < DEFAULT_THROW_TIME) {
+    public void releaseUsing(@NotNull ItemStack stack, @NotNull Level level, @NotNull LivingEntity entity, int remainingTicks) {
+        if (this.getUseDuration(stack, entity) - remainingTicks < DEFAULT_THROW_TIME) {
             return;
         }
 
@@ -63,7 +64,7 @@ public abstract class BombItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
         player.startUsingItem(hand);
         return InteractionResultHolder.consume(player.getItemInHand(hand));
     }

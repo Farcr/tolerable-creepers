@@ -1,7 +1,7 @@
 package com.evandev.tolerable_creepers.core.mixin;
 
+import com.evandev.tolerable_creepers.Constants;
 import com.evandev.tolerable_creepers.common.entity.Creepie;
-import com.evandev.tolerable_creepers.core.TolerableCreepers;
 import com.evandev.tolerable_creepers.core.extension.CreeperExtension;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.resources.ResourceLocation;
@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 public abstract class CreeperMixin extends Monster implements CreeperExtension {
 
     @Unique
-    private static final ResourceLocation DETONATE_LOOT_TABLE = new ResourceLocation(Constants.MOD_ID, "entities/creeper_explode");
+    private static final ResourceLocation DETONATE_LOOT_TABLE = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "entities/creeper_explode");
 
     @Shadow
     @Final

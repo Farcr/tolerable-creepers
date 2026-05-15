@@ -5,6 +5,7 @@ import com.evandev.tolerable_creepers.core.registry.TCTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -14,6 +15,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class FireBomb extends ThrowableBomb {
 
@@ -30,10 +32,14 @@ public class FireBomb extends ThrowableBomb {
     }
 
     @Override
+    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
+    }
+
+    @Override
     public void tick() {
         super.tick();
 
-        if (!this.level.isClientSide() && this.level.getBlockState(this.blockPosition()).is(TCTags.FIRE_BOMB_EXPLODE)) {
+        if (!this.level().isClientSide() && this.level().getBlockState(this.blockPosition()).is(TCTags.FIRE_BOMB_EXPLODE)) {
             this.explode();
         }
     }
@@ -46,7 +52,7 @@ public class FireBomb extends ThrowableBomb {
             double xVelocity = Math.sin(theta) * cos * (this.random.nextFloat() * 0.3 + 0.7);
             double yVelocity = cos * Math.cos(theta) * (this.random.nextFloat() * 0.3 + 0.7);
             double zVelocity = Math.sin(alpha) * (this.random.nextFloat() * 0.3 + 0.7);
-            this.level.addParticle(particle, this.getX(), this.getY(), this.getZ(), xVelocity * 0.6, yVelocity * 0.6, zVelocity * 0.6);
+            this.level().addParticle(particle, this.getX(), this.getY(), this.getZ(), xVelocity * 0.6, yVelocity * 0.6, zVelocity * 0.6);
         }
     }
 
@@ -62,7 +68,7 @@ public class FireBomb extends ThrowableBomb {
                 double xVelocity = Math.sin(theta) * cos * (this.random.nextFloat() * 0.3 + 0.7);
                 double yVelocity = cos * Math.cos(theta) * (this.random.nextFloat() * 0.3 + 0.7);
                 double zVelocity = Math.sin(alpha) * (this.random.nextFloat() * 0.3 + 0.7);
-                this.level.addParticle(ParticleTypes.FLAME, false, this.getX(), this.getY(), this.getZ(), xVelocity * 0.1, yVelocity * 0.1, zVelocity * 0.1);
+                this.level().addParticle(ParticleTypes.FLAME, false, this.getX(), this.getY(), this.getZ(), xVelocity * 0.1, yVelocity * 0.1, zVelocity * 0.1);
             }
         } else if (b == 1) {
             this.spawnParticles(ParticleTypes.SMOKE, 400);
@@ -73,19 +79,19 @@ public class FireBomb extends ThrowableBomb {
 
     @Override
     protected void explode() {
-        this.level.explode(this, this.getX(), this.getY(0.0625), this.getZ(), 2.0F, Explosion.BlockInteraction.NONE);
+        this.level().explode(this, this.getX(), this.getY(0.0625), this.getZ(), 2.0F, Explosion.BlockInteraction.NONE);
         // Light nearby campfires on fire
         BlockPos.withinManhattan(this.blockPosition(), 6, 4, 6).forEach(pos -> {
-            BlockState state = this.level.getBlockState(pos);
+            BlockState state = this.level().getBlockState(pos);
             if (state.is(BlockTags.CAMPFIRES) && state.hasProperty(CampfireBlock.LIT) && !state.getValue(CampfireBlock.LIT)) {
-                this.level.setBlock(pos, state.setValue(CampfireBlock.LIT, true), 3);
+                this.level().setBlock(pos, state.setValue(CampfireBlock.LIT, true), 3);
             }
             if (state.getBlock() == Blocks.TNT) {
-                TntBlock.explode(this.level, pos);
-                this.level.setBlock(pos, Blocks.AIR.defaultBlockState(), 11);
+                TntBlock.explode(this.level(), pos);
+                this.level().setBlock(pos, Blocks.AIR.defaultBlockState(), 11);
             }
         });
-        this.level.broadcastEntityEvent(this, (byte) (this.isInWater() ? 1 : 0));
+        this.level().broadcastEntityEvent(this, (byte) (this.isInWater() ? 1 : 0));
         this.discard();
     }
 

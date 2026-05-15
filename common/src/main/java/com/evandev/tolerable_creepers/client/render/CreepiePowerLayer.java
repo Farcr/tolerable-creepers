@@ -1,6 +1,7 @@
 package com.evandev.tolerable_creepers.client.render;
 
 import com.evandev.tolerable_creepers.Constants;
+import com.evandev.tolerable_creepers.client.model.CreepieModel;
 import com.evandev.tolerable_creepers.common.entity.Creepie;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -9,14 +10,14 @@ import net.minecraft.client.renderer.entity.layers.EnergySwirlLayer;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class CreepiePowerLayer extends EnergySwirlLayer<Creepie, CreepieModel> {
+public class CreepiePowerLayer extends EnergySwirlLayer<Creepie, CreepieModel<Creepie>> {
 
     private static final ResourceLocation POWER_LOCATION = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/entity/creepie/creepie_armor.png");
-    private final CreepieModel model;
+    private final CreepieModel<Creepie> model;
 
-    public CreepiePowerLayer(RenderLayerParent<Creepie, CreepieModel> renderLayerParent, EntityModelSet modelSet) {
+    public CreepiePowerLayer(RenderLayerParent<Creepie, CreepieModel<Creepie>> renderLayerParent, EntityModelSet modelSet) {
         super(renderLayerParent);
-        this.model = new CreepieModel(modelSet.bakeLayer(CreepieModel.LAYER_LOCATION_ARMOR));
+        this.model = new CreepieModel<>(modelSet.bakeLayer(CreepieModel.LAYER_LOCATION_ARMOR));
     }
 
     @Override

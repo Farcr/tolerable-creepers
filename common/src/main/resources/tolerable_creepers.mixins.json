@@ -1,12 +1,20 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.evandev.tolerable_creepers.mixin",
+  "package": "com.evandev.tolerable_creepers.core.mixin",
   "compatibilityLevel": "JAVA_18",
   "mixins": [
+    "AzaleaBlockMixin",
+    "CreeperMixin",
+    "FlowerPotBlockMixin",
+    "IronGolemMixin",
+    "ZoglinMixin",
+    "accessor.CreeperAccessor",
+    "accessor.FlowerPotBlockAccessor",
+    "accessor.MobAccessor"
   ],
   "client": [
-    "ExampleMixin"
+    "client.CreeperModelMixin"
   ],
   "server": [],
   "injectors": {

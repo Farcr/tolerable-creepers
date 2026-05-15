@@ -1,4 +1,4 @@
-package com.evandev.tolerable_creepers.core.mixin;
+package com.evandev.tolerable_creepers.core.mixin.accessor;
 
 import net.minecraft.world.entity.monster.Creeper;
 import org.spongepowered.asm.mixin.Mixin;

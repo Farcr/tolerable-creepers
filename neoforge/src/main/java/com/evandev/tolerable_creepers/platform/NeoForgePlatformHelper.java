@@ -1,6 +1,9 @@
 package com.evandev.tolerable_creepers.platform;
 
+import com.evandev.tolerable_creepers.platform.registry.RegistrationProvider;
 import com.evandev.tolerable_creepers.platform.services.IPlatformHelper;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
@@ -33,5 +36,10 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     @Override
     public boolean isPhysicalClient() {
         return FMLLoader.getDist() == Dist.CLIENT;
+    }
+
+    @Override
+    public <T> RegistrationProvider<T> createRegistrationProvider(ResourceKey<? extends Registry<T>> registry, String modId) {
+        return new NeoForgeRegistrationProvider<>(registry, modId);
     }
 }

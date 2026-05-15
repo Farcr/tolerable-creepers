@@ -1,9 +1,9 @@
 package com.evandev.tolerable_creepers.client.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
 import com.evandev.tolerable_creepers.common.entity.PrimedSporeBarrel;
 import com.evandev.tolerable_creepers.core.registry.TCBlocks;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.entity.TntMinecartRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.InventoryMenu;
+import org.jetbrains.annotations.NotNull;
 
 public class SporeBarrelRenderer extends EntityRenderer<PrimedSporeBarrel> {
     private final BlockRenderDispatcher blockRenderer;
@@ -23,7 +24,7 @@ public class SporeBarrelRenderer extends EntityRenderer<PrimedSporeBarrel> {
     }
 
     @Override
-    public void render(PrimedSporeBarrel primedTnt, float f, float g, PoseStack poseStack, MultiBufferSource multiBufferSource, int i) {
+    public void render(PrimedSporeBarrel primedTnt, float f, float g, PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource, int i) {
         poseStack.pushPose();
         poseStack.translate(0.0, 0.5, 0.0);
         int j = primedTnt.getFuse();
@@ -36,16 +37,16 @@ public class SporeBarrelRenderer extends EntityRenderer<PrimedSporeBarrel> {
             poseStack.scale(k, k, k);
         }
 
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
         poseStack.translate(-0.5, -0.5, 0.5);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
         TntMinecartRenderer.renderWhiteSolidBlock(this.blockRenderer, TCBlocks.SPORE_BARREL.get().defaultBlockState(), poseStack, multiBufferSource, i, j / 5 % 2 == 0);
         poseStack.popPose();
         super.render(primedTnt, f, g, poseStack, multiBufferSource, i);
     }
 
     @Override
-    public ResourceLocation getTextureLocation(PrimedSporeBarrel entity) {
+    public @NotNull ResourceLocation getTextureLocation(@NotNull PrimedSporeBarrel entity) {
         return InventoryMenu.BLOCK_ATLAS;
     }
 }

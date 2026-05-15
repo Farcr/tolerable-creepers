@@ -1,5 +1,6 @@
 package com.evandev.tolerable_creepers.client.render;
 
+import com.evandev.tolerable_creepers.client.model.CreepieModel;
 import com.evandev.tolerable_creepers.common.entity.Creepie;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -8,10 +9,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
-public class CreepieRenderer extends MobRenderer<Creepie, CreepieModel> {
+public class CreepieRenderer extends MobRenderer<Creepie, CreepieModel<Creepie>> {
 
     public CreepieRenderer(EntityRendererProvider.Context context) {
-        super(context, new CreepieModel(context.bakeLayer(CreepieModel.LAYER_LOCATION)), 0.25F);
+        super(context, new CreepieModel<>(context.bakeLayer(CreepieModel.LAYER_LOCATION)), 0.25F);
         this.addLayer(new CreepiePowerLayer(this, context.getModelSet()));
     }
 

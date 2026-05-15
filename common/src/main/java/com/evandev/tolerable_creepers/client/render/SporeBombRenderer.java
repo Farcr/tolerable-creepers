@@ -1,14 +1,13 @@
 package com.evandev.tolerable_creepers.client.render;
 
+import com.evandev.tolerable_creepers.Constants;
 import com.evandev.tolerable_creepers.common.entity.SporeBomb;
-import com.evandev.tolerable_creepers.core.TolerableCreepers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 
 public class SporeBombRenderer extends ThrowableBombRenderer<SporeBomb> {
 
-    private static final ResourceLocation MODEL = new ResourceLocation(Constants.MOD_ID, "entity/spore_bomb");
+    private static final ResourceLocation MODEL = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "entity/spore_bomb");
 
     public SporeBombRenderer(EntityRendererProvider.Context context) {
         super(context);

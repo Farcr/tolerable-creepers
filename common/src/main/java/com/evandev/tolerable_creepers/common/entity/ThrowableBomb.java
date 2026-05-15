@@ -13,6 +13,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class ThrowableBomb extends ThrowableProjectile {
 
@@ -37,10 +38,6 @@ public abstract class ThrowableBomb extends ThrowableProjectile {
     }
 
     @Override
-    protected void defineSynchedData() {
-    }
-
-    @Override
     protected void onHit(HitResult hitResult) {
         if (hitResult.getType() == HitResult.Type.MISS) {
             return;
@@ -50,7 +47,7 @@ public abstract class ThrowableBomb extends ThrowableProjectile {
             Vec3 motion = this.getDeltaMovement();
             if (motion.lengthSqr() < 0.1) {
                 this.setDeltaMovement(Vec3.ZERO);
-                this.onGround = true;
+                this.setOnGround(true);
                 return;
             }
 
@@ -78,8 +75,8 @@ public abstract class ThrowableBomb extends ThrowableProjectile {
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult entityHitResult) {
-        if (!this.level.isClientSide()) {
+    protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
+        if (!this.level().isClientSide()) {
             this.explode();
         }
     }
@@ -96,7 +93,7 @@ public abstract class ThrowableBomb extends ThrowableProjectile {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag nbt) {
+    protected void addAdditionalSaveData(@NotNull CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
         if (this.explodeTimer > -1) {
             nbt.putByte("ExplodeTime", (byte) this.explodeTimer);
@@ -104,7 +101,7 @@ public abstract class ThrowableBomb extends ThrowableProjectile {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag nbt) {
+    protected void readAdditionalSaveData(@NotNull CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
         this.explodeTimer = nbt.contains("ExplodeTime", Tag.TAG_INT) ? nbt.getInt("ExplodeTime") : -1;
     }
@@ -113,16 +110,16 @@ public abstract class ThrowableBomb extends ThrowableProjectile {
     public void tick() {
         super.tick();
 
-        if (this.level.isClientSide()) {
+        if (this.level().isClientSide()) {
             this.oRoll = this.roll;
 
             double distance = this.getDeltaMovement().lengthSqr();
             if (distance > 0.01) {
-                this.roll += Math.sqrt(distance) * 45;
+                this.roll += (float) (Math.sqrt(distance) * 45);
             }
 
-            if (!this.onGround) {
-                this.level.addParticle(this.getParticle(), this.getX(), this.getY() + this.getBbHeight(), this.getZ(), 0, 0, 0);
+            if (!this.onGround()) {
+                this.level().addParticle(this.getParticle(), this.getX(), this.getY() + this.getBbHeight(), this.getZ(), 0, 0, 0);
             }
         } else {
             if (this.explodeTimer > -1) {

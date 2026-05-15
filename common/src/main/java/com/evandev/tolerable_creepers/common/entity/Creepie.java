@@ -2,7 +2,7 @@ package com.evandev.tolerable_creepers.common.entity;
 
 import com.evandev.tolerable_creepers.Constants;
 import com.evandev.tolerable_creepers.core.extension.CreeperExtension;
-import com.evandev.tolerable_creepers.core.mixin.CreeperAccessor;
+import com.evandev.tolerable_creepers.core.mixin.accessor.CreeperAccessor;
 import com.evandev.tolerable_creepers.core.registry.TCEntities;
 import com.evandev.tolerable_creepers.core.registry.TCItems;
 import com.evandev.tolerable_creepers.core.registry.TCTags;
@@ -33,6 +33,8 @@ import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -208,17 +210,17 @@ public class Creepie extends Creeper {
 
         this.walkAnimationState.animateWhen(isWalking && !isHiding && !isSad && !isDancing, this.tickCount);
         this.idleAnimationState.animateWhen(!isWalking && !isHiding && !isSad && !isDancing, this.tickCount);
-        this.hideAnimationState.animateWhen(isHiding && !isSad, this.tickCount); // TODO 3 ticks of transition in JSON
+        this.hideAnimationState.animateWhen(isHiding && !isSad, this.tickCount);
         this.danceAnimationState.animateWhen(isDancing && !isSad, this.tickCount);
     }
 
     @Override
     public void handleEntityEvent(byte id) {
-        if (id == 2) { // Vanilla entity hurt event
+        if (id == 2) {
             this.hurtAnimationState.start(this.tickCount);
-        } else if (id == 10) { // Novelty event
+        } else if (id == 10) {
             this.idleNoveltyAnimationState.start(this.tickCount);
-        } else if (id == 11) { // Sad animation start event
+        } else if (id == 11) {
             this.sadAnimationState.start(this.tickCount);
             this.sadAnimationTimer = 40;
         } else {
@@ -345,11 +347,11 @@ public class Creepie extends Creeper {
         for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
             ItemStack itemStack = this.getItemBySlot(equipmentSlot);
             float f = this.getEquipmentDropChance(equipmentSlot);
-            boolean bl2 = f > 1.0F;
+            boolean guaranteedDrop = f > 1.0F;
+            boolean hasVanishingCurse = EnchantmentHelper.has(itemStack, EnchantmentEffectComponents.PREVENT_EQUIPMENT_DROP);
 
-            // TODO EnchantmentHelper.hasVanishingCurse
-            if (!itemStack.isEmpty() && (bl || bl2) && Math.max(this.random.nextFloat() - (float) i * 0.01F, 0.0F) < f) {
-                if (!bl2 && itemStack.isDamageableItem()) {
+            if (!itemStack.isEmpty() && !hasVanishingCurse && (guaranteedDrop || this.random.nextFloat() < f)) {
+                if (!guaranteedDrop && itemStack.isDamageableItem()) {
                     itemStack.setDamageValue(itemStack.getMaxDamage() - this.random.nextInt(1 + this.random.nextInt(Math.max(itemStack.getMaxDamage() - 3, 1))));
                 }
 

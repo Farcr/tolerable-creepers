@@ -30,7 +30,7 @@ public class CreeperModelMixin<T extends Entity> {
             this.headPose = this.head.storePose();
         }
 
-        boolean dancing = entity.getLevel().getEntities(entity, entity.getBoundingBox().inflate(5.0F)).stream().anyMatch(e -> e instanceof Creepie creepie && creepie.distanceToSqr(entity) <= 25.0F && creepie.isDancing());
+        boolean dancing = entity.level().getEntities(entity, entity.getBoundingBox().inflate(5.0F)).stream().anyMatch(e -> e instanceof Creepie creepie && creepie.distanceToSqr(entity) <= 25.0F && creepie.isDancing());
         if (dancing) {
             float n = h / 60.0F;
             this.head.x = this.headPose.x + Mth.sin(n * 10.0F) * 0.25F;

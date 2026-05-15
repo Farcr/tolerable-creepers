@@ -1,17 +1,13 @@
 package com.evandev.tolerable_creepers.core.registry;
 
-import gg.moonflower.pollen.api.registry.wrapper.v1.PollinatedEntityRegistry;
-import com.evandev.tolerable_creepers.common.entity.CreeperSpores;
-import com.evandev.tolerable_creepers.common.entity.Creepie;
-import com.evandev.tolerable_creepers.common.entity.FireBomb;
-import com.evandev.tolerable_creepers.common.entity.MischiefArrow;
-import com.evandev.tolerable_creepers.common.entity.PrimedSporeBarrel;
-import com.evandev.tolerable_creepers.common.entity.SporeBomb;
+import com.evandev.tolerable_creepers.Constants;
+import com.evandev.tolerable_creepers.common.entity.*;
 import com.evandev.tolerable_creepers.common.entity.ai.sensing.CreepieAttackablesSensor;
 import com.evandev.tolerable_creepers.common.entity.ai.sensing.CreepieFriendSensor;
 import com.evandev.tolerable_creepers.common.entity.ai.sensing.CreepieSpecificSensor;
-import com.evandev.tolerable_creepers.core.TolerableCreepers;
+import com.evandev.tolerable_creepers.platform.registry.RegistrationProvider;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -20,8 +16,7 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 import java.util.function.Supplier;
 
 public class TCEntities {
-
-    public static final PollinatedEntityRegistry ENTITIES = PollinatedEntityRegistry.create(Constants.MOD_ID);
+    public static final RegistrationProvider<EntityType<?>> ENTITIES = RegistrationProvider.get(Registries.ENTITY_TYPE, Constants.MOD_ID);
 
     public static final Supplier<EntityType<CreeperSpores>> CREEPER_SPORES = ENTITIES.register("creeper_spores", () -> EntityType.Builder.<CreeperSpores>of(CreeperSpores::new, MobCategory.MISC).sized(0.25f, 0.25f).clientTrackingRange(4).build("creeper_spores"));
     public static final Supplier<EntityType<Creepie>> CREEPIE = ENTITIES.register("creepie", () -> EntityType.Builder.<Creepie>of(Creepie::new, MobCategory.MONSTER).sized(0.625F, 0.875F).clientTrackingRange(8).build("creepie"));

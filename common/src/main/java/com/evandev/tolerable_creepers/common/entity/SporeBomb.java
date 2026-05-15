@@ -26,19 +26,19 @@ public class SporeBomb extends ThrowableBomb {
 
     @Override
     protected void explode() {
-        double height = this.level.getHeight(Heightmap.Types.MOTION_BLOCKING, this.blockPosition().getX(), this.blockPosition().getZ());
+        double height = this.level().getHeight(Heightmap.Types.MOTION_BLOCKING, this.blockPosition().getX(), this.blockPosition().getZ());
 
         double yPos = this.getY();
         if (Math.abs(yPos - height) < 4) {
             yPos = height;
         }
 
-        this.level.explode(this, this.getX(), this.getY(0.0625), this.getZ(), 1.0F, Explosion.BlockInteraction.NONE);
-        CreeperSpores spores = new CreeperSpores(this.level, this.getX(), yPos + 0.01, this.getZ(), 1 + this.random.nextInt(2), false);
+        this.level().explode(this, this.getX(), this.getY(0.0625), this.getZ(), 1.0F, Explosion.BlockInteraction.NONE);
+        CreeperSpores spores = new CreeperSpores(this.level(), this.getX(), yPos + 0.01, this.getZ(), 1 + this.random.nextInt(2), false);
         if (!(this.getOwner() instanceof LivingEntity livingEntity) || !livingEntity.hasEffect(MobEffects.INVISIBILITY)) {
             spores.setOwner(this.getOwner());
         }
-        this.level.addFreshEntity(spores);
+        this.level().addFreshEntity(spores);
         this.discard();
     }
 

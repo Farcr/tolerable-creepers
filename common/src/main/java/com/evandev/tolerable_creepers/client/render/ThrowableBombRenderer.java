@@ -2,8 +2,7 @@ package com.evandev.tolerable_creepers.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
-import gg.moonflower.pollen.api.registry.render.v1.ModelRegistry;
+import com.mojang.math.Axis;
 import com.evandev.tolerable_creepers.common.entity.ThrowableBomb;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
@@ -17,6 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -45,14 +45,14 @@ public abstract class ThrowableBombRenderer<T extends ThrowableBomb> extends Ent
     }
 
     @Override
-    public void render(T entity, float yaw, float partialTicks, PoseStack matrixStack, MultiBufferSource buffers, int packedLight) {
+    public void render(@NotNull T entity, float yaw, float partialTicks, PoseStack matrixStack, MultiBufferSource buffers, int packedLight) {
         BakedModel model = ModelRegistry.getModel(this.getModelLocation(entity));
 
         matrixStack.pushPose();
-        matrixStack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) - 90.0F));
+        matrixStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) - 90.0F));
 
         matrixStack.translate(0, entity.getBbHeight() / 2F, 0);
-        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot()) - entity.getRoll(partialTicks)));
+        matrixStack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot()) - entity.getRoll(partialTicks)));
         matrixStack.translate(0, -entity.getBbHeight() / 2F, 0);
 
         matrixStack.translate(-0.5, 0.0, -0.5);
@@ -64,7 +64,7 @@ public abstract class ThrowableBombRenderer<T extends ThrowableBomb> extends Ent
     }
 
     @Override
-    public ResourceLocation getTextureLocation(T entity) {
+    public @NotNull ResourceLocation getTextureLocation(@NotNull T entity) {
         return InventoryMenu.BLOCK_ATLAS;
     }
 

@@ -1,4 +1,4 @@
-package com.evandev.tolerable_creepers.core.mixin;
+package com.evandev.tolerable_creepers.core.mixin.accessor;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FlowerPotBlock;

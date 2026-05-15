@@ -1,23 +1,35 @@
 package com.evandev.tolerable_creepers.core.registry;
 
-import gg.moonflower.pollen.api.registry.resource.v1.TagRegistry;
-import com.evandev.tolerable_creepers.core.TolerableCreepers;
+import com.evandev.tolerable_creepers.Constants;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
 public class TCTags {
+    public static TagKey<EntityType<?>> EXPLOSION_IMMUNE = registerEntity("explosion_immune");
+    public static TagKey<EntityType<?>> EXPLOSION_PRONE = registerEntity("explosion_prone");
 
-    public static TagKey<EntityType<?>> EXPLOSION_IMMUNE = TagRegistry.bindEntityType(new ResourceLocation(Constants.MOD_ID, "explosion_immune"));
-    public static TagKey<EntityType<?>> EXPLOSION_PRONE = TagRegistry.bindEntityType(new ResourceLocation(Constants.MOD_ID, "explosion_prone"));
+    public static TagKey<EntityType<?>> CREEPIE_AVOID = registerEntity("creepie_avoid");
+    public static TagKey<EntityType<?>> CREEPIE_FRIENDS = registerEntity("creepie_friends");
 
-    public static TagKey<EntityType<?>> CREEPIE_AVOID = TagRegistry.bindEntityType(new ResourceLocation(Constants.MOD_ID, "creepie_avoid"));
-    public static TagKey<EntityType<?>> CREEPIE_FRIENDS = TagRegistry.bindEntityType(new ResourceLocation(Constants.MOD_ID, "creepie_friends"));
+    public static TagKey<Block> CREEPIE_REPELLENTS = registerBlock("creepie_repellents");
+    public static TagKey<Block> CREEPIE_HIDING_SPOTS = registerBlock("creepie_hiding_spots");
+    public static TagKey<Block> CREEPIE_PARTY_SPOTS = registerBlock("creepie_party_spots");
+    public static TagKey<Block> CREEPIE_FORCE_PARTY_SPOTS = registerBlock("creepie_force_party_spots");
+    public static TagKey<Block> FIRE_BOMB_EXPLODE = registerBlock("fire_bomb_explode");
 
-    public static TagKey<Block> CREEPIE_REPELLENTS = TagRegistry.bindBlock(new ResourceLocation(Constants.MOD_ID, "creepie_repellents"));
-    public static TagKey<Block> CREEPIE_HIDING_SPOTS = TagRegistry.bindBlock(new ResourceLocation(Constants.MOD_ID, "creepie_hiding_spots"));
-    public static TagKey<Block> CREEPIE_PARTY_SPOTS = TagRegistry.bindBlock(new ResourceLocation(Constants.MOD_ID, "creepie_party_spots"));
-    public static TagKey<Block> CREEPIE_FORCE_PARTY_SPOTS = TagRegistry.bindBlock(new ResourceLocation(Constants.MOD_ID, "creepie_force_party_spots"));
-    public static TagKey<Block> FIRE_BOMB_EXPLODE = TagRegistry.bindBlock(new ResourceLocation(Constants.MOD_ID, "fire_bomb_explode"));
+    private static TagKey<EntityType<?>> registerEntity(String name) {
+        return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, name));
+    }
+
+    private static TagKey<Item> registerItem(String name) {
+        return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, name));
+    }
+
+    private static TagKey<Block> registerBlock(String name) {
+        return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, name));
+    }
 }

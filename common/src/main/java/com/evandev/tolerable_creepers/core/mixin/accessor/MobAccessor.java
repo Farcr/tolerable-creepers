@@ -1,4 +1,4 @@
-package com.evandev.tolerable_creepers.core.mixin;
+package com.evandev.tolerable_creepers.core.mixin.accessor;
 
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
