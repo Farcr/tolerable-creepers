@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "#tolerablecreepers:creepie_force_party_spots",
+    "#tolerable_creepers:creepie_force_party_spots",
     "minecraft:spore_blossom"
   ]
 }

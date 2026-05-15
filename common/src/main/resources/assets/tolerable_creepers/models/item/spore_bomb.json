@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "tolerablecreepers:item/spore_bomb"
+    "layer0": "tolerable_creepers:item/spore_bomb"
   }
 }

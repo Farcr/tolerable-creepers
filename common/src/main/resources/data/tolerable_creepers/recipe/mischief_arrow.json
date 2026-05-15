@@ -8,11 +8,11 @@
       "item": "minecraft:arrow"
     },
     {
-      "item": "tolerablecreepers:creeper_spores"
+      "item": "tolerable_creepers:creeper_spores"
     }
   ],
   "result": {
-    "item": "tolerablecreepers:mischief_arrow",
+    "item": "tolerable_creepers:mischief_arrow",
     "count": 2
   }
 }

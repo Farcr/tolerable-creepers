@@ -7,10 +7,10 @@
   ],
   "key": {
     "#": {
-      "item": "tolerablecreepers:creeper_spores"
+      "item": "tolerable_creepers:creeper_spores"
     }
   },
   "result": {
-    "item": "tolerablecreepers:spore_barrel"
+    "item": "tolerable_creepers:spore_barrel"
   }
 }

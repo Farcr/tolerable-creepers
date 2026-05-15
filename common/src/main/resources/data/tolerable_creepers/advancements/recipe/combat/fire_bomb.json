@@ -2,17 +2,17 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "tolerablecreepers:spore_bomb"
+      "tolerable_creepers:fire_bomb"
     ]
   },
   "criteria": {
-    "has_tolerablecreepers:creeper_spores": {
+    "has_minecraft:gunpowder": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "tolerablecreepers:creeper_spores"
+              "minecraft:gunpowder"
             ]
           }
         ]
@@ -21,13 +21,13 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "tolerablecreepers:spore_bomb"
+        "recipe": "tolerable_creepers:fire_bomb"
       }
     }
   },
   "requirements": [
     [
-      "has_tolerablecreepers:creeper_spores",
+      "has_minecraft:gunpowder",
       "has_the_recipe"
     ]
   ]

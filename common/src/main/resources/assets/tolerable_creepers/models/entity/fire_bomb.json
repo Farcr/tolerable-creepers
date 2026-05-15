@@ -1,6 +1,6 @@
 {
-	"parent": "tolerablecreepers:entity/bomb",
+	"parent": "tolerable_creepers:entity/bomb",
 	"textures": {
-		"texture": "tolerablecreepers:entity/projectiles/fire_bomb"
+		"texture": "tolerable_creepers:entity/projectiles/fire_bomb"
 	}
 }

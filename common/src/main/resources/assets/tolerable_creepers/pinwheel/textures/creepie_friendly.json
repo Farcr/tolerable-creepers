@@ -1,7 +1,7 @@
 {
   "texture": {
     "type": "location",
-    "texture": "tolerablecreepers:entity/creepie/creepie_friendly",
+    "texture": "tolerable_creepers:entity/creepie/creepie_friendly",
     "layer": "cutout"
   }
 }

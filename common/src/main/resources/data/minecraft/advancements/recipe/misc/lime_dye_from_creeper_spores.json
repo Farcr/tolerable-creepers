@@ -6,13 +6,13 @@
     ]
   },
   "criteria": {
-    "has_tolerablecreepers:creeper_spores": {
+    "has_tolerable_creepers:creeper_spores": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "tolerablecreepers:creeper_spores"
+              "tolerable_creepers:creeper_spores"
             ]
           }
         ]
@@ -27,7 +27,7 @@
   },
   "requirements": [
     [
-      "has_tolerablecreepers:creeper_spores",
+      "has_tolerable_creepers:creeper_spores",
       "has_the_recipe"
     ]
   ]

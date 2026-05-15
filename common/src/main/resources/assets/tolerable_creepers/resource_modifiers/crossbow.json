@@ -6,9 +6,9 @@
 	"overrides": [
         {
             "predicate": {
-                "tolerablecreepers:mischief_arrow": 1
+                "tolerable_creepers:mischief_arrow": 1
             },
-            "model": "tolerablecreepers:item/crossbow_mischief_arrow"
+            "model": "tolerable_creepers:item/crossbow_mischief_arrow"
         }
 	]
 }

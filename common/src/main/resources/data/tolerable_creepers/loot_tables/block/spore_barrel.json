@@ -7,7 +7,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "tolerablecreepers:spore_barrel"
+          "name": "tolerable_creepers:spore_barrel"
         }
       ],
       "conditions": [

@@ -1,12 +1,12 @@
 {
   "config.tolerable_creepers.title": "Tolerable Creepers Config",
   "config.tolerable_creepers.category.general": "General",
-  "block.tolerablecreepers.spore_barrel": "Spore Barrel",
-  "entity.tolerablecreepers.creeper_spores": "Creeper Spores",
-  "entity.tolerablecreepers.creepie": "Creepie",
-  "entity.tolerablecreepers.spore_barrel": "Spore Barrel",
-  "item.tolerablecreepers.creeper_spores": "Creeper Spores",
-  "item.tolerablecreepers.fire_bomb": "Fire Bomb",
-  "item.tolerablecreepers.mischief_arrow": "Mischief Arrow",
-  "item.tolerablecreepers.spore_bomb": "Spore Bomb"
+  "block.tolerable_creepers.spore_barrel": "Spore Barrel",
+  "entity.tolerable_creepers.creeper_spores": "Creeper Spores",
+  "entity.tolerable_creepers.creepie": "Creepie",
+  "entity.tolerable_creepers.spore_barrel": "Spore Barrel",
+  "item.tolerable_creepers.creeper_spores": "Creeper Spores",
+  "item.tolerable_creepers.fire_bomb": "Fire Bomb",
+  "item.tolerable_creepers.mischief_arrow": "Mischief Arrow",
+  "item.tolerable_creepers.spore_bomb": "Spore Bomb"
 }

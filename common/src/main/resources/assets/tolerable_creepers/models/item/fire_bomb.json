@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "tolerablecreepers:item/fire_bomb"
+    "layer0": "tolerable_creepers:item/fire_bomb"
   }
 }

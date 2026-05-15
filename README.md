@@ -5,7 +5,7 @@
 
 ## License
 
-[![Code license (MIT)](https://img.shields.io/badge/code%20license-MIT-green.svg?style=flat-square)](https://github.com/evanbones/Tolerable-Creepers/blob/1.20.1/LICENSE)
+[![Code license (GPLv3)](https://img.shields.io/badge/code%20license-GPLv3-green.svg?style=flat-square)](https://github.com/Farcr/tolerable-creepers/blob/1.21.1/LICENSE)
 
 ---
 

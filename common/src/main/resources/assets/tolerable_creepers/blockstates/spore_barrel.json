@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "tolerablecreepers:block/spore_barrel"
+      "model": "tolerable_creepers:block/spore_barrel"
     }
   }
 }

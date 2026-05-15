@@ -11,11 +11,11 @@
       "item": "minecraft:string"
     },
     "G": {
-      "item": "tolerablecreepers:creeper_spores"
+      "item": "minecraft:gunpowder"
     }
   },
   "result": {
-    "item": "tolerablecreepers:spore_bomb",
+    "item": "tolerable_creepers:fire_bomb",
     "count": 2
   }
 }
