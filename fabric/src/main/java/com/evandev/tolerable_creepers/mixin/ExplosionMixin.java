@@ -2,8 +2,6 @@ package com.evandev.tolerable_creepers.mixin;
 
 import com.evandev.tolerable_creepers.common.entity.CreeperSpores;
 import com.evandev.tolerable_creepers.core.registry.TCTags;
-import com.llamalad7.mixinextras.expression.Definition;
-import com.llamalad7.mixinextras.expression.Expression;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -35,11 +33,9 @@ public abstract class ExplosionMixin {
     @Shadow
     public abstract void clearToBlow();
 
-    @Definition(id = "getEntities", method = "Lnet/minecraft/world/level/Level;getEntities(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/AABB;)Ljava/util/List;")
-    @Expression("? = ?.getEntities(?, ?)")
     @ModifyVariable(
             method = "explode",
-            at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER)
+            at = @At(value = "STORE", ordinal = 0)
     )
     private List<Entity> filterHitEntities(List<Entity> list) {
         List<Entity> filteredList = new ArrayList<>(list);

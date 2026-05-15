@@ -192,9 +192,9 @@ public class CreeperSpores extends ThrowableProjectile {
 
     @Override
     protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
-        this.entityData.set(LANDED, false);
-        this.entityData.set(POWERED, false);
-        this.entityData.set(CLOUD_SIZE, 0);
+        builder.define(LANDED, false);
+        builder.define(POWERED, false);
+        builder.define(CLOUD_SIZE, 0);
     }
 
     private boolean hasLanded() {

@@ -3,8 +3,6 @@ package com.evandev.tolerable_creepers.client.model;
 import com.evandev.tolerable_creepers.Constants;
 import com.evandev.tolerable_creepers.client.animation.CreepieAnimation;
 import com.evandev.tolerable_creepers.common.entity.Creepie;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -82,10 +80,5 @@ public class CreepieModel<T extends Creepie> extends HierarchicalModel<T> {
         this.animate(entity.sadAnimationState, CreepieAnimation.creepie_sad, ageInTicks, 1.0F);
         this.animate(entity.hideAnimationState, CreepieAnimation.creepie_hide, ageInTicks, 1.0F);
         this.animate(entity.danceAnimationState, CreepieAnimation.creepie_dance, ageInTicks, 1.0F);
-    }
-
-    @Override
-    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int i, int i1, int i2) {
-        super.renderToBuffer(poseStack, vertexConsumer, i, i1);
     }
 }
