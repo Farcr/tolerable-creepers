@@ -86,10 +86,11 @@ public class TolerableCreepersNeoForge {
     private void addCreativeTabItems(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.COMBAT) {
             event.accept(TCItems.MISCHIEF_ARROW.get());
-            event.accept(TCItems.FIRE_BOMB.get());
             event.accept(TCItems.SPORE_BOMB.get());
         } else if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(TCItems.CREEPER_SPORES.get());
+        } else if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) {
+            event.accept(TCItems.CREEPIE_SPAWN_EGG.get());
         }
     }
 

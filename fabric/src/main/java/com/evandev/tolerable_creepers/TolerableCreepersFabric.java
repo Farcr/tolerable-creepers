@@ -43,7 +43,6 @@ public class TolerableCreepersFabric implements ModInitializer {
 
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT).register(entries -> {
             entries.accept(TCItems.MISCHIEF_ARROW.get());
-            entries.accept(TCItems.FIRE_BOMB.get());
             entries.accept(TCItems.SPORE_BOMB.get());
         });
 

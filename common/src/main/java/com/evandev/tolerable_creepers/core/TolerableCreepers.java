@@ -31,7 +31,6 @@ public class TolerableCreepers {
 
     public static void postInit() {
         DispenserBlock.registerBehavior(TCItems.MISCHIEF_ARROW.get(), new ProjectileDispenseBehavior(TCItems.MISCHIEF_ARROW.get()));
-        DispenserBlock.registerBehavior(TCItems.FIRE_BOMB.get(), new ProjectileDispenseBehavior(TCItems.FIRE_BOMB.get()));
         DispenserBlock.registerBehavior(TCItems.SPORE_BOMB.get(), new ProjectileDispenseBehavior(TCItems.SPORE_BOMB.get()));
 
         DispenserBlock.registerBehavior(TCItems.CREEPER_SPORES.get(), new DefaultDispenseItemBehavior() {
