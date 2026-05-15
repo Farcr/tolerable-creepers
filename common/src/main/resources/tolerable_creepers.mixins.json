@@ -8,6 +8,7 @@
     "CreeperMixin",
     "FlowerPotBlockMixin",
     "IronGolemMixin",
+    "accessor.SensorTypeInvoker",
     "ZoglinMixin",
     "accessor.CreeperAccessor",
     "accessor.FlowerPotBlockAccessor",

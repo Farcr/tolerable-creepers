@@ -32,4 +32,7 @@ public class TCTags {
     private static TagKey<Block> registerBlock(String name) {
         return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, name));
     }
+
+    public static void load() {
+    }
 }

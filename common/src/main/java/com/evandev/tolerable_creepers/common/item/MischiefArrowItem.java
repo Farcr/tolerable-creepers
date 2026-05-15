@@ -7,8 +7,7 @@ import net.minecraft.world.item.ArrowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class MischiefArrowItem extends ArrowItem {
 
@@ -17,7 +16,7 @@ public class MischiefArrowItem extends ArrowItem {
     }
 
     @Override
-    public AbstractArrow createArrow(@NotNull Level level, @NotNull ItemStack ammo, @NotNull LivingEntity shooter, @Nullable ItemStack weapon) {
+    public @NotNull AbstractArrow createArrow(@NotNull Level level, @NotNull ItemStack ammo, @NotNull LivingEntity shooter, @Nullable ItemStack weapon) {
         return new MischiefArrow(level, shooter, ammo, weapon);
     }
 }

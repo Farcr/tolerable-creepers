@@ -12,4 +12,7 @@ public class TCParticles {
 
     public static final RegistryObject<SimpleParticleType> CREEPER_SPORES = PARTICLES.register("creeper_spores", () -> new SimpleParticleType(false) {
     });
+
+    public static void load() {
+    }
 }

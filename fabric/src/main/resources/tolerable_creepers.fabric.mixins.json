@@ -4,6 +4,7 @@
   "package": "com.evandev.tolerable_creepers.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "ExplosionMixin"
   ],
   "client": [
   ],
