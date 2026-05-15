@@ -10,6 +10,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(AzaleaBlock.class)
@@ -20,7 +21,7 @@ public abstract class AzaleaBlockMixin extends BushBlock {
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext collisionContext) {
+    public @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext collisionContext) {
         if (collisionContext instanceof EntityCollisionContext entityContext && entityContext.getEntity() instanceof Creepie creepie && creepie.isHiding())
             return Shapes.empty();
         return super.getCollisionShape(state, level, pos, collisionContext);

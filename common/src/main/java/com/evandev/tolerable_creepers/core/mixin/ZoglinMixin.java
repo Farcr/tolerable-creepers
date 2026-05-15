@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Zoglin.class)
 public class ZoglinMixin {
-    @Inject(method = "isTargetable", at = @At("HEAD"))
+    @Inject(method = "isTargetable", at = @At("HEAD"), cancellable = true)
     private void canAttackType(LivingEntity livingEntity, CallbackInfoReturnable<Boolean> cir) {
         EntityType<?> entityType = livingEntity.getType();
         if (entityType != EntityType.ZOGLIN && Sensor.isEntityAttackable((Zoglin) (Object) this, livingEntity))
