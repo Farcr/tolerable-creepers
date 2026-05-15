@@ -18,6 +18,6 @@ public class MischiefArrowItem extends ArrowItem {
 
     @Override
     public AbstractArrow createArrow(@NotNull Level level, @NotNull ItemStack ammo, @NotNull LivingEntity shooter, @Nullable ItemStack weapon) {
-        return new MischiefArrow(level, shooter);
+        return new MischiefArrow(level, shooter, ammo, weapon);
     }
 }

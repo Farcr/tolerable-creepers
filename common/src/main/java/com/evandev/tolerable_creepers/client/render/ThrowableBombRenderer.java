@@ -1,16 +1,18 @@
 package com.evandev.tolerable_creepers.client.render;
 
+import com.evandev.tolerable_creepers.common.entity.ThrowableBomb;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import com.evandev.tolerable_creepers.common.entity.ThrowableBomb;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -22,8 +24,11 @@ import java.util.List;
 
 public abstract class ThrowableBombRenderer<T extends ThrowableBomb> extends EntityRenderer<T> {
 
+    private final ItemRenderer itemRenderer;
+
     public ThrowableBombRenderer(EntityRendererProvider.Context context) {
         super(context);
+        this.itemRenderer = context.getItemRenderer();
     }
 
     private void renderModelLists(BakedModel bakedModel, int packedLight, int packedOverlay, PoseStack poseStack, VertexConsumer vertexConsumer) {
@@ -40,13 +45,13 @@ public abstract class ThrowableBombRenderer<T extends ThrowableBomb> extends Ent
     private void renderQuadList(PoseStack matrixStack, VertexConsumer vertexConsumer, List<BakedQuad> quads, int packedLight, int packedOverlay) {
         PoseStack.Pose pose = matrixStack.last();
         for (BakedQuad bakedQuad : quads) {
-            vertexConsumer.putBulkData(pose, bakedQuad, 1.0F, 1.0F, 1.0F, packedLight, packedOverlay);
+            vertexConsumer.putBulkData(pose, bakedQuad, 1.0F, 1.0F, 1.0F, 1.0F, packedLight, packedOverlay);
         }
     }
 
     @Override
     public void render(@NotNull T entity, float yaw, float partialTicks, PoseStack matrixStack, MultiBufferSource buffers, int packedLight) {
-        BakedModel model = ModelRegistry.getModel(this.getModelLocation(entity));
+        BakedModel model = this.itemRenderer.getItemModelShaper().getModelManager().getModel(this.getModelLocation(entity));
 
         matrixStack.pushPose();
         matrixStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) - 90.0F));
@@ -68,5 +73,5 @@ public abstract class ThrowableBombRenderer<T extends ThrowableBomb> extends Ent
         return InventoryMenu.BLOCK_ATLAS;
     }
 
-    public abstract ResourceLocation getModelLocation(T entity);
+    public abstract ModelResourceLocation getModelLocation(T entity);
 }

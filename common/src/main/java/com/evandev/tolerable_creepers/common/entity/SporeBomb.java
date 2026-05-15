@@ -3,12 +3,13 @@ package com.evandev.tolerable_creepers.common.entity;
 import com.evandev.tolerable_creepers.core.registry.TCEntities;
 import com.evandev.tolerable_creepers.core.registry.TCParticles;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
+import org.jetbrains.annotations.NotNull;
 
 public class SporeBomb extends ThrowableBomb {
 
@@ -25,6 +26,10 @@ public class SporeBomb extends ThrowableBomb {
     }
 
     @Override
+    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
+    }
+
+    @Override
     protected void explode() {
         double height = this.level().getHeight(Heightmap.Types.MOTION_BLOCKING, this.blockPosition().getX(), this.blockPosition().getZ());
 
@@ -33,7 +38,7 @@ public class SporeBomb extends ThrowableBomb {
             yPos = height;
         }
 
-        this.level().explode(this, this.getX(), this.getY(0.0625), this.getZ(), 1.0F, Explosion.BlockInteraction.NONE);
+        this.level().explode(this, this.getX(), this.getY(0.0625), this.getZ(), 1.0F, Level.ExplosionInteraction.NONE);
         CreeperSpores spores = new CreeperSpores(this.level(), this.getX(), yPos + 0.01, this.getZ(), 1 + this.random.nextInt(2), false);
         if (!(this.getOwner() instanceof LivingEntity livingEntity) || !livingEntity.hasEffect(MobEffects.INVISIBILITY)) {
             spores.setOwner(this.getOwner());

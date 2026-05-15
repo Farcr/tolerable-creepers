@@ -79,7 +79,7 @@ public class FireBomb extends ThrowableBomb {
 
     @Override
     protected void explode() {
-        this.level().explode(this, this.getX(), this.getY(0.0625), this.getZ(), 2.0F, Explosion.BlockInteraction.NONE);
+        this.level().explode(this, this.getX(), this.getY(0.0625), this.getZ(), 2.0F, Level.ExplosionInteraction.NONE);
         // Light nearby campfires on fire
         BlockPos.withinManhattan(this.blockPosition(), 6, 4, 6).forEach(pos -> {
             BlockState state = this.level().getBlockState(pos);

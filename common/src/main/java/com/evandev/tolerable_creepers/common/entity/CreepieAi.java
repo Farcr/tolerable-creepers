@@ -1,21 +1,17 @@
 package com.evandev.tolerable_creepers.common.entity;
 
+import com.evandev.tolerable_creepers.common.entity.ai.*;
+import com.evandev.tolerable_creepers.core.registry.TCEntities;
+import com.evandev.tolerable_creepers.core.registry.TCTags;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
-import com.evandev.tolerable_creepers.common.entity.ai.*;
-import com.evandev.tolerable_creepers.core.registry.TCEntities;
-import com.evandev.tolerable_creepers.core.registry.TCTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.*;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -24,6 +20,7 @@ import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.schedule.Activity;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -44,27 +41,28 @@ public class CreepieAi {
         return brain;
     }
 
-    protected static void initMemories(Creepie creepie) {}
+    protected static void initMemories(Creepie creepie) {
+    }
 
     private static void initCoreActivity(Brain<Creepie> brain) {
-        brain.addActivity(Activity.CORE, 0, ImmutableList.of(
+        brain.addActivity(Activity.CORE, 0, ImmutableList.<BehaviorControl<? super Creepie>>of(
                 new Swim(0.8F),
                 new LookAtTargetSink(45, 90),
                 new MoveToTargetSink() {
                     @Override
-                    protected boolean checkExtraStartConditions(ServerLevel level, Mob entity) {
+                    protected boolean checkExtraStartConditions(@NotNull ServerLevel level, @NotNull Mob entity) {
                         return ((Creepie) entity).canMove() && super.checkExtraStartConditions(level, entity);
                     }
                 },
                 new CreepieFollowOwner(16, 1.0F),
-                new StopBeingAngryIfTargetDead()
+                StopBeingAngryIfTargetDead.create() 
         ));
     }
 
     private static void initIdleActivity(Brain<Creepie> brain) {
-        brain.addActivity(Activity.IDLE, 0, ImmutableList.of(
-                new SetEntityLookTarget(8.0F),
-                new StartAttacking(CreepieAi::findNearestValidAttackTarget),
+        brain.addActivity(Activity.IDLE, 0, ImmutableList.<BehaviorControl<? super Creepie>>of(
+                SetEntityLookTarget.create(8.0F), 
+                StartAttacking.create(CreepieAi::findNearestValidAttackTarget), 
                 new CreepieDance(),
                 avoidRepellent(),
                 createIdleLookBehaviors(),
@@ -73,9 +71,9 @@ public class CreepieAi {
     }
 
     private static void initFightActivity(Creepie creepie, Brain<Creepie> brain) {
-        brain.addActivityAndRemoveMemoryWhenStopped(Activity.FIGHT, 0, ImmutableList.of(
-                new StopAttackingIfTargetInvalid(livingEntity -> !isNearestValidAttackTarget(creepie, (LivingEntity) livingEntity)),
-                new SetWalkTargetFromAttackTargetIfTargetOutOfReach(1.0F),
+        brain.addActivityAndRemoveMemoryWhenStopped(Activity.FIGHT, 0, ImmutableList.<BehaviorControl<? super Creepie>>of(
+                StopAttackingIfTargetInvalid.create(target -> !isNearestValidAttackTarget(creepie, target)), 
+                SetWalkTargetFromAttackTargetIfTargetOutOfReach.create(1.0F), 
                 new CreepieAttack()
         ), MemoryModuleType.ATTACK_TARGET);
     }
@@ -83,17 +81,17 @@ public class CreepieAi {
     private static void initCelebrateActivity(Brain<Creepie> brain) {
         brain.addActivityAndRemoveMemoriesWhenStopped(Activity.CELEBRATE, ImmutableList.of(
                 Pair.of(5, avoidRepellent()),
-                Pair.of(6, new StartAttacking(CreepieAi::findNearestValidAttackTarget)),
+                Pair.of(6, StartAttacking.create(CreepieAi::findNearestValidAttackTarget)), 
                 Pair.of(7, new CreepieDance()),
                 Pair.of(8, new RunOne(ImmutableList.of(
-                        Pair.of(new SetEntityLookTarget(TCEntities.CREEPIE.get(), 8.0F), 1),
+                        Pair.of(SetEntityLookTarget.create(TCEntities.CREEPIE.get(), 8.0F), 1), 
                         Pair.of(new DoNothing(10, 20), 1)
                 )))
         ), ImmutableSet.of(Pair.of(MemoryModuleType.DANCING, MemoryStatus.VALUE_PRESENT)), ImmutableSet.of(MemoryModuleType.DANCING));
     }
 
     private static void initRetreatActivity(Brain<Creepie> brain) {
-        brain.addActivityAndRemoveMemoryWhenStopped(Activity.AVOID, 10, ImmutableList.of(
+        brain.addActivityAndRemoveMemoryWhenStopped(Activity.AVOID, 10, ImmutableList.<BehaviorControl<? super Creepie>>of(
                 avoidRepellent(),
                 SetWalkTargetAwayFrom.entity(MemoryModuleType.AVOID_TARGET, 1.0F, 12, true),
                 createIdleLookBehaviors(),
@@ -103,7 +101,7 @@ public class CreepieAi {
 
     private static void initPlayActivity(Brain<Creepie> brain) {
         brain.addActivity(Activity.PLAY, ImmutableList.of(
-                Pair.of(99, new StartAttacking(CreepieAi::findNearestValidAttackTarget)),
+                Pair.of(99, StartAttacking.create(CreepieAi::findNearestValidAttackTarget)), 
                 Pair.of(0, new MoveToTargetSink(80, 120)),
                 Pair.of(5, createIdleLookBehaviors()),
                 Pair.of(5, new CreepieDance()),
@@ -115,7 +113,7 @@ public class CreepieAi {
                                 Pair.of(InteractWith.of(EntityType.CREEPER, 8, MemoryModuleType.INTERACTION_TARGET, 0.5F, 2), 2),
                                 Pair.of(InteractWith.of(TCEntities.CREEPIE.get(), 8, MemoryModuleType.INTERACTION_TARGET, 0.5F, 2), 1),
                                 Pair.of(createIdleMovementBehaviors(), 1),
-                                Pair.of(new SetWalkTargetFromLookTarget(0.5F, 2), 1),
+                                Pair.of(SetWalkTargetFromLookTarget.create(0.5F, 2), 1), 
                                 Pair.of(new CreepieHide(), 2),
                                 Pair.of(new DoNothing(20, 40), 2)
                         )
@@ -125,16 +123,16 @@ public class CreepieAi {
 
     private static RunOne createIdleLookBehaviors() {
         return new RunOne(ImmutableList.of(
-                Pair.of(new SetEntityLookTarget(EntityType.PLAYER, 8.0F), 1),
-                Pair.of(new SetEntityLookTarget(8.0F), 1),
+                Pair.of(SetEntityLookTarget.create(EntityType.PLAYER, 8.0F), 1), 
+                Pair.of(SetEntityLookTarget.create(8.0F), 1), 
                 Pair.of(new DoNothing(30, 60), 1)
         ));
     }
 
     private static RunOne createIdleMovementBehaviors() {
         return new RunOne(ImmutableList.of(
-                Pair.of(new RandomStroll(0.6F), 2),
-                Pair.of(new SetWalkTargetFromLookTarget(0.6F, 3), 2),
+                Pair.of(RandomStroll.stroll(0.6F), 2), 
+                Pair.of(SetWalkTargetFromLookTarget.create(0.6F, 3), 2), 
                 Pair.of(new DoNothing(30, 60), 1)
         ));
     }

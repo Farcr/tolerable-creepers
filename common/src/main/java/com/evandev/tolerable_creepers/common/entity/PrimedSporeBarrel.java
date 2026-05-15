@@ -57,7 +57,7 @@ public class PrimedSporeBarrel extends PrimedTnt {
     }
 
     private void explode() {
-        this.level().explode(this, this.getX(), this.getY(0.0625), this.getZ(), 4.0F / 3.0F, Explosion.BlockInteraction.NONE);
+        this.level().explode(this, this.getX(), this.getY(0.0625), this.getZ(), 4.0F / 3.0F, Level.ExplosionInteraction.NONE);
         CreeperSpores creeperSpores = new CreeperSpores(this.level(), this.getX(), this.getY() + 0.01, this.getZ(), this.random.nextInt(7) + 5, false);
         if (this.owner != null && !this.owner.isInvisible())
             creeperSpores.setOwner(this.owner);

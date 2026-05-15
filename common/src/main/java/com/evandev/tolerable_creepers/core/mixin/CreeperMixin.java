@@ -3,13 +3,18 @@ package com.evandev.tolerable_creepers.core.mixin;
 import com.evandev.tolerable_creepers.Constants;
 import com.evandev.tolerable_creepers.common.entity.Creepie;
 import com.evandev.tolerable_creepers.core.extension.CreeperExtension;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.loot.LootTable;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -21,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 public abstract class CreeperMixin extends Monster implements CreeperExtension {
 
     @Unique
-    private static final ResourceLocation DETONATE_LOOT_TABLE = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "entities/creeper_explode");
+    private static final ResourceKey<LootTable> DETONATE_LOOT_TABLE = ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "entities/creeper_explode"));
 
     @Shadow
     @Final
@@ -48,13 +53,13 @@ public abstract class CreeperMixin extends Monster implements CreeperExtension {
     }
 
     @Override
-    protected void dropFromLootTable(DamageSource damageSource, boolean bl) {
-        this.exploded = this.getType() == EntityType.CREEPER && damageSource.isExplosion();
+    protected void dropFromLootTable(@NotNull DamageSource damageSource, boolean bl) {
+        this.exploded = this.getType() == EntityType.CREEPER && damageSource.is(DamageTypeTags.IS_EXPLOSION);
         super.dropFromLootTable(damageSource, bl);
     }
 
     @Override
-    protected ResourceLocation getDefaultLootTable() {
+    protected @NotNull ResourceKey<LootTable> getDefaultLootTable() {
         return this.exploded ? DETONATE_LOOT_TABLE : super.getDefaultLootTable();
     }
 }

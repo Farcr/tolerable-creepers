@@ -9,8 +9,9 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Player;
@@ -25,6 +26,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class SporeBarrelBlock extends Block {
@@ -43,7 +45,7 @@ public class SporeBarrelBlock extends Block {
     }
 
     @Override
-    public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
+    public void stepOn(Level level, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Entity entity) {
         RandomSource random = level.getRandom();
         Direction[] directions = Direction.values();
         for (Direction direction : directions) {
@@ -59,28 +61,28 @@ public class SporeBarrelBlock extends Block {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
-        ItemStack itemStack = player.getItemInHand(hand);
+    protected @NotNull ItemInteractionResult useItemOn(ItemStack itemStack, @NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult blockHitResult) {
         if (!itemStack.is(Items.FLINT_AND_STEEL) && !itemStack.is(Items.FIRE_CHARGE))
-            return super.use(state, level, pos, player, hand, blockHitResult);
+            return super.useItemOn(itemStack, state, level, pos, player, hand, blockHitResult);
 
         explode(level, pos, player);
         level.setBlock(pos, Blocks.AIR.defaultBlockState(), 11);
         Item item = itemStack.getItem();
         if (!player.isCreative()) {
             if (itemStack.is(Items.FLINT_AND_STEEL)) {
-                itemStack.hurtAndBreak(1, player, playerx -> playerx.broadcastBreakEvent(hand));
+                EquipmentSlot slot = hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
+                itemStack.hurtAndBreak(1, player, slot);
             } else {
                 itemStack.shrink(1);
             }
         }
 
         player.awardStat(Stats.ITEM_USED.get(item));
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return ItemInteractionResult.sidedSuccess(level.isClientSide());
     }
 
     @Override
-    public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
+    public void onPlace(BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, BlockState blockState2, boolean bl) {
         if (!blockState2.is(blockState.getBlock()) && level.hasNeighborSignal(blockPos)) {
             explode(level, blockPos, null);
             level.removeBlock(blockPos, false);
@@ -88,7 +90,7 @@ public class SporeBarrelBlock extends Block {
     }
 
     @Override
-    public void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, BlockPos blockPos2, boolean bl) {
+    public void neighborChanged(@NotNull BlockState blockState, Level level, @NotNull BlockPos blockPos, @NotNull Block block, @NotNull BlockPos blockPos2, boolean bl) {
         if (level.hasNeighborSignal(blockPos)) {
             explode(level, blockPos, null);
             level.removeBlock(blockPos, false);
@@ -96,16 +98,16 @@ public class SporeBarrelBlock extends Block {
     }
 
     @Override
-    public void wasExploded(Level level, BlockPos blockPos, Explosion explosion) {
+    public void wasExploded(Level level, @NotNull BlockPos blockPos, @NotNull Explosion explosion) {
         if (!level.isClientSide()) {
-            PrimedTnt primedTnt = new PrimedSporeBarrel(level, (double) blockPos.getX() + 0.5, blockPos.getY(), (double) blockPos.getZ() + 0.5, explosion.getSourceMob());
+            PrimedTnt primedTnt = new PrimedSporeBarrel(level, (double) blockPos.getX() + 0.5, blockPos.getY(), (double) blockPos.getZ() + 0.5, explosion.getIndirectSourceEntity());
             primedTnt.setFuse((short) (level.getRandom().nextInt(15) + 5));
             level.addFreshEntity(primedTnt);
         }
     }
 
     @Override
-    public void onProjectileHit(Level level, BlockState blockState, BlockHitResult blockHitResult, Projectile projectile) {
+    public void onProjectileHit(Level level, @NotNull BlockState blockState, @NotNull BlockHitResult blockHitResult, @NotNull Projectile projectile) {
         if (!level.isClientSide()) {
             BlockPos blockPos = blockHitResult.getBlockPos();
             Entity entity = projectile.getOwner();
@@ -117,7 +119,7 @@ public class SporeBarrelBlock extends Block {
     }
 
     @Override
-    public boolean dropFromExplosion(Explosion explosion) {
+    public boolean dropFromExplosion(@NotNull Explosion explosion) {
         return false;
     }
 }

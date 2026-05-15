@@ -15,6 +15,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class CreepieModel<T extends Creepie> extends HierarchicalModel<T> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "creepie"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION_ARMOR = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "creepie"), "armor");
+
     private final ModelPart root;
     private final ModelPart creepie;
     private final ModelPart r_leg_front;

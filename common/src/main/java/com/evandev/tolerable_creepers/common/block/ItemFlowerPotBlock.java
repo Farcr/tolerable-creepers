@@ -1,21 +1,21 @@
 package com.evandev.tolerable_creepers.common.block;
 
-import com.evandev.tolerable_creepers.core.mixin.accessor.FlowerPotBlockAccessor;
 import com.evandev.tolerable_creepers.core.registry.TCItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerPotBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 
+// TODO: what the hell is this class
 public class ItemFlowerPotBlock extends FlowerPotBlock {
 
     public ItemFlowerPotBlock(Properties properties) {
@@ -23,28 +23,29 @@ public class ItemFlowerPotBlock extends FlowerPotBlock {
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
+    public @NotNull ItemStack getCloneItemStack(@NotNull LevelReader level, @NotNull BlockPos pos, @NotNull BlockState state) {
         return new ItemStack(TCItems.CREEPER_SPORES.get());
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
-        ItemStack stack = player.getItemInHand(hand);
-        boolean remove = !(stack.getItem() instanceof BlockItem blockItem) || !FlowerPotBlockAccessor.getPottedByContent().containsKey(blockItem.getBlock());
-        if (remove && !stack.is(TCItems.CREEPER_SPORES.get())) {
+    protected @NotNull ItemInteractionResult useItemOn(ItemStack stack, @NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult blockHitResult) {
+        boolean remove = stack.is(TCItems.CREEPER_SPORES.get());
+
+        if (remove) {
             ItemStack contentStack = new ItemStack(TCItems.CREEPER_SPORES.get());
+
             if (stack.isEmpty()) {
                 player.setItemInHand(hand, contentStack);
-            } else if (!player.addItem(contentStack)) {
+            } else if (!player.getInventory().add(contentStack)) {
                 player.drop(contentStack, false);
             }
 
             level.setBlock(pos, Blocks.FLOWER_POT.defaultBlockState(), 3);
 
             level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
-            return InteractionResult.sidedSuccess(level.isClientSide);
-        } else {
-            return InteractionResult.CONSUME;
+            return ItemInteractionResult.sidedSuccess(level.isClientSide);
         }
+
+        return ItemInteractionResult.CONSUME;
     }
 }

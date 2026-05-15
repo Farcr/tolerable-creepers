@@ -12,18 +12,20 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
+
 public class MischiefArrow extends AbstractArrow {
 
     public MischiefArrow(EntityType<? extends MischiefArrow> entityType, Level level) {
         super(entityType, level);
     }
 
-    public MischiefArrow(Level level, LivingEntity livingEntity) {
-        super(TCEntities.MISCHIEF_ARROW.get(), livingEntity, level);
+    public MischiefArrow(Level level, LivingEntity livingEntity, ItemStack ammo, @Nullable ItemStack weapon) {
+        super(TCEntities.MISCHIEF_ARROW.get(), livingEntity, level, ammo, weapon);
     }
 
-    public MischiefArrow(Level level, double d, double e, double f) {
-        super(TCEntities.MISCHIEF_ARROW.get(), d, e, f, level);
+    public MischiefArrow(Level level, double x, double y, double z, ItemStack ammo, @Nullable ItemStack weapon) {
+        super(TCEntities.MISCHIEF_ARROW.get(), x, y, z, level, ammo, weapon);
     }
 
     @Override
