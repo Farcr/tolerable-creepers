@@ -219,7 +219,7 @@ public class CreeperSpores extends ThrowableProjectile {
 
     @Override
     protected double getDefaultGravity() {
-        return (float) ((this.hasLanded() ? 0.06F : 1.0F) * super.getGravity());
+        return (float) ((this.hasLanded() ? 0.06F : 1.0F) * super.getDefaultGravity());
     }
 
     @Override
