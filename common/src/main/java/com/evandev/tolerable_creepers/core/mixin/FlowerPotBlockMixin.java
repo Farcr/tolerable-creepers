@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerPotBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,7 +27,10 @@ public class FlowerPotBlockMixin {
     public void placeCreeperSpores(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult, CallbackInfoReturnable<ItemInteractionResult> cir) {
 
         if (state.is(Blocks.FLOWER_POT) && stack.is(TCItems.CREEPER_SPORES.get())) {
-            level.setBlock(pos, TCBlocks.POTTED_CREEPER_SPORES.get().defaultBlockState(), 3);
+            BlockState newState = TCBlocks.POTTED_CREEPER_SPORES.get().defaultBlockState()
+                    .setValue(BlockStateProperties.HORIZONTAL_FACING, player.getDirection().getOpposite());
+
+            level.setBlock(pos, newState, 3);
             player.awardStat(Stats.POT_FLOWER);
             level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
             if (!player.getAbilities().instabuild) {

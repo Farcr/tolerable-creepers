@@ -1,0 +1,20 @@
+{
+  "ambientocclusion": false,
+  "textures": {
+    "creeper": "tolerable_creepers:block/potted_creepie"
+  },
+  "elements": [
+    {
+      "from": [6, 5, 6],
+      "to": [10, 12, 10],
+      "faces": {
+        "north": {"uv": [4, 4, 8, 11], "texture": "#creeper"},
+        "east": {"uv": [0, 4, 4, 11], "texture": "#creeper"},
+        "south": {"uv": [12, 4, 16, 11], "texture": "#creeper"},
+        "west": {"uv": [8, 4, 12, 11], "texture": "#creeper"},
+        "up": {"uv": [4, 0, 8, 4], "texture": "#creeper"},
+        "down": {"uv": [8, 0, 12, 4], "texture": "#creeper"}
+      }
+    }
+  ]
+}

@@ -1,7 +1,36 @@
 {
-  "variants": {
-    "": {
-      "model": "tolerable_creepers:block/potted_creeper"
+  "multipart": [
+    {
+      "apply": {
+        "model": "minecraft:block/flower_pot"
+      }
+    },
+    {
+      "when": { "facing": "north" },
+      "apply": {
+        "model": "tolerable_creepers:block/potted_creeper_spores_plant"
+      }
+    },
+    {
+      "when": { "facing": "east" },
+      "apply": {
+        "model": "tolerable_creepers:block/potted_creeper_spores_plant",
+        "y": 90
+      }
+    },
+    {
+      "when": { "facing": "south" },
+      "apply": {
+        "model": "tolerable_creepers:block/potted_creeper_spores_plant",
+        "y": 180
+      }
+    },
+    {
+      "when": { "facing": "west" },
+      "apply": {
+        "model": "tolerable_creepers:block/potted_creeper_spores_plant",
+        "y": 270
+      }
     }
-  }
+  ]
 }
