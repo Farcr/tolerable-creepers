@@ -39,6 +39,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -392,12 +393,35 @@ public class Creepie extends Creeper {
 
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
-        if (source.is(DamageTypeTags.IS_EXPLOSION) && source.getEntity() instanceof Creepie otherCreepie && otherCreepie != this) {
-            LivingEntity myTarget = this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null);
-            LivingEntity theirTarget = otherCreepie.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null);
+        if (source.is(DamageTypeTags.IS_EXPLOSION)) {
+            Entity attacker = source.getEntity();
+            Entity direct = source.getDirectEntity();
 
-            if (myTarget != null && myTarget.equals(theirTarget)) {
-                return false;
+            Creepie otherCreepie = null;
+            if (attacker instanceof Creepie c) {
+                otherCreepie = c;
+            } else if (direct instanceof Creepie c) {
+                otherCreepie = c;
+            }
+
+            if (otherCreepie != null && otherCreepie != this) {
+                LivingEntity myTarget = this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null);
+                LivingEntity theirTarget = otherCreepie.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null);
+                if (myTarget != null && myTarget.equals(theirTarget)) {
+
+                    Vec3 knockbackDir = this.position().subtract(otherCreepie.position());
+
+                    if (knockbackDir.lengthSqr() < 1.0E-4D) {
+                        knockbackDir = new Vec3(this.random.nextDouble() - 0.5D, 0.0D, this.random.nextDouble() - 0.5D);
+                    }
+
+                    knockbackDir = knockbackDir.normalize().scale(0.8D);
+
+                    this.setDeltaMovement(this.getDeltaMovement().add(knockbackDir.x, 0.25D, knockbackDir.z));
+                    this.hasImpulse = true;
+
+                    return false;
+                }
             }
         }
 
