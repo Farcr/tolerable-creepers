@@ -43,10 +43,15 @@ public class TolerableCreepersFabric implements ModInitializer {
 
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT).register(entries -> {
             entries.accept(TCItems.MISCHIEF_ARROW.get());
+            entries.accept(TCItems.SPORE_BARREL.get());
         });
 
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(entries -> {
             entries.accept(TCItems.CREEPER_SPORES.get());
+        });
+
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(entries -> {
+            entries.accept(TCItems.CREEPIE_SPAWN_EGG.get());
         });
 
         FabricDefaultAttributeRegistry.register(TCEntities.CREEPIE.get(), Creepie.createAttributes());

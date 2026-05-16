@@ -108,6 +108,7 @@ public class TolerableCreepersNeoForge {
     private void addCreativeTabItems(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.COMBAT) {
             event.accept(TCItems.MISCHIEF_ARROW.get());
+            event.accept(TCItems.SPORE_BARREL.get());
 
             if (ModList.get().isLoaded("nomansland") && TCNeoForgeRegistries.SPORE_BOMB != null) {
                 event.accept(TCNeoForgeRegistries.SPORE_BOMB.get());
