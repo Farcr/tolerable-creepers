@@ -7,6 +7,7 @@ import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.monster.Creeper;
+import org.jetbrains.annotations.NotNull;
 
 public class CreepieAttack extends Behavior<Creeper> {
 
@@ -15,23 +16,23 @@ public class CreepieAttack extends Behavior<Creeper> {
     }
 
     @Override
-    protected boolean checkExtraStartConditions(ServerLevel level, Creeper creeper) {
+    protected boolean checkExtraStartConditions(@NotNull ServerLevel level, Creeper creeper) {
         LivingEntity livingEntity = creeper.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null);
         return creeper.getSwellDir() > 0 || livingEntity != null && creeper.distanceToSqr(livingEntity) < 4.0;
     }
 
     @Override
-    protected void stop(ServerLevel serverLevel, Creeper creeper, long l) {
+    protected void stop(@NotNull ServerLevel serverLevel, Creeper creeper, long l) {
         creeper.getNavigation().setSpeedModifier(1.0);
     }
 
     @Override
-    protected boolean canStillUse(ServerLevel level, Creeper creeper, long l) {
+    protected boolean canStillUse(@NotNull ServerLevel level, @NotNull Creeper creeper, long l) {
         return this.checkExtraStartConditions(level, creeper);
     }
 
     @Override
-    protected void tick(ServerLevel level, Creeper creeper, long l) {
+    protected void tick(@NotNull ServerLevel level, Creeper creeper, long l) {
         LivingEntity target = creeper.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null);
         if (target == null) {
             creeper.setSwellDir(-1);

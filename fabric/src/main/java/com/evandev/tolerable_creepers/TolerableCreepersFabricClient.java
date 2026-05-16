@@ -2,7 +2,9 @@ package com.evandev.tolerable_creepers;
 
 import com.evandev.tolerable_creepers.client.model.CreepieModel;
 import com.evandev.tolerable_creepers.client.particle.CreeperSporesParticle;
-import com.evandev.tolerable_creepers.client.render.*;
+import com.evandev.tolerable_creepers.client.render.CreepieRenderer;
+import com.evandev.tolerable_creepers.client.render.MischiefArrowRenderer;
+import com.evandev.tolerable_creepers.client.render.SporeBarrelRenderer;
 import com.evandev.tolerable_creepers.core.registry.TCEntities;
 import com.evandev.tolerable_creepers.core.registry.TCItems;
 import com.evandev.tolerable_creepers.core.registry.TCParticles;
@@ -29,8 +31,6 @@ public class TolerableCreepersFabricClient implements ClientModInitializer {
         EntityRendererRegistry.register(TCEntities.CREEPIE.get(), CreepieRenderer::new);
         EntityRendererRegistry.register(TCEntities.SPORE_BARREL.get(), SporeBarrelRenderer::new);
         EntityRendererRegistry.register(TCEntities.MISCHIEF_ARROW.get(), MischiefArrowRenderer::new);
-        EntityRendererRegistry.register(TCEntities.FIRE_BOMB.get(), FireBombRenderer::new);
-        EntityRendererRegistry.register(TCEntities.SPORE_BOMB.get(), SporeBombRenderer::new);
 
         ItemProperties.register(Items.CROSSBOW, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "mischief_arrow"),
                 (itemStack, clientLevel, livingEntity, i) -> {

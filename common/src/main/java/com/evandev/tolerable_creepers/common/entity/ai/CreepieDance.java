@@ -1,14 +1,14 @@
 package com.evandev.tolerable_creepers.common.entity.ai;
 
-import com.google.common.collect.ImmutableMap;
 import com.evandev.tolerable_creepers.common.entity.Creepie;
 import com.evandev.tolerable_creepers.core.registry.TCTags;
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.level.block.Blocks;
+import org.jetbrains.annotations.NotNull;
 
 public class CreepieDance extends Behavior<Creepie> {
 
@@ -32,7 +32,7 @@ public class CreepieDance extends Behavior<Creepie> {
     }
 
     @Override
-    protected void start(ServerLevel serverLevel, Creepie creepie, long l) {
+    protected void start(@NotNull ServerLevel serverLevel, Creepie creepie, long l) {
         Brain<?> brain = creepie.getBrain();
         if (brain.getMemory(MemoryModuleType.DANCING).orElse(false)) {
             brain.eraseMemory(MemoryModuleType.DANCING);

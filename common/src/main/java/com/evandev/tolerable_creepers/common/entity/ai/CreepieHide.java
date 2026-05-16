@@ -1,15 +1,15 @@
 package com.evandev.tolerable_creepers.common.entity.ai;
 
-import com.google.common.collect.ImmutableMap;
 import com.evandev.tolerable_creepers.common.entity.Creepie;
 import com.evandev.tolerable_creepers.core.registry.TCEntities;
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
+import org.jetbrains.annotations.NotNull;
 
 public class CreepieHide extends Behavior<Creepie> {
 
@@ -23,12 +23,12 @@ public class CreepieHide extends Behavior<Creepie> {
     }
 
     @Override
-    protected boolean checkExtraStartConditions(ServerLevel serverLevel, Creepie creepie) {
+    protected boolean checkExtraStartConditions(@NotNull ServerLevel serverLevel, Creepie creepie) {
         return !creepie.isHiding() && serverLevel.getRandom().nextInt(AVERAGE_WAIT_TIME_BETWEEN_RUNS) == 0;
     }
 
     @Override
-    protected void start(ServerLevel serverLevel, Creepie creepie, long l) {
+    protected void start(@NotNull ServerLevel serverLevel, Creepie creepie, long l) {
         Brain<?> brain = creepie.getBrain();
         brain.setMemory(MemoryModuleType.WALK_TARGET, brain.getMemory(TCEntities.HIDING_SPOT.get()).map(pos -> new WalkTarget(pos.above(), 0.6F, 1)));
     }

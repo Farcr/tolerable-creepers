@@ -17,6 +17,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -391,6 +392,15 @@ public class Creepie extends Creeper {
 
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
+        if (source.is(DamageTypeTags.IS_EXPLOSION) && source.getEntity() instanceof Creepie otherCreepie && otherCreepie != this) {
+            LivingEntity myTarget = this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null);
+            LivingEntity theirTarget = otherCreepie.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null);
+
+            if (myTarget != null && myTarget.equals(theirTarget)) {
+                return false;
+            }
+        }
+
         boolean bl = super.hurt(source, amount);
         if (bl && !this.level().isClientSide()) {
             this.level().broadcastEntityEvent(this, (byte) 2); // Entity Hurt event

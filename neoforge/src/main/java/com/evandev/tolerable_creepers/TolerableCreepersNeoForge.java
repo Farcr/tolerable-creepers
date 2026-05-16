@@ -3,7 +3,11 @@ package com.evandev.tolerable_creepers;
 import com.evandev.tolerable_creepers.client.ClientConfigSetup;
 import com.evandev.tolerable_creepers.client.model.CreepieModel;
 import com.evandev.tolerable_creepers.client.particle.CreeperSporesParticle;
-import com.evandev.tolerable_creepers.client.render.*;
+import com.evandev.tolerable_creepers.client.render.CreepieRenderer;
+import com.evandev.tolerable_creepers.client.render.MischiefArrowRenderer;
+import com.evandev.tolerable_creepers.client.render.SporeBarrelRenderer;
+import com.evandev.tolerable_creepers.client.render.SporeBombRenderer;
+import com.evandev.tolerable_creepers.common.TCNeoForgeRegistries;
 import com.evandev.tolerable_creepers.common.entity.CreeperSpores;
 import com.evandev.tolerable_creepers.common.entity.Creepie;
 import com.evandev.tolerable_creepers.core.TolerableCreepers;
@@ -15,7 +19,9 @@ import com.evandev.tolerable_creepers.core.registry.TCTags;
 import com.evandev.tolerable_creepers.platform.NeoForgeRegistrationProvider;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.dispenser.ProjectileDispenseBehavior;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -35,13 +41,16 @@ import net.minecraft.world.item.component.ChargedProjectiles;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.ComposterBlock;
+import net.minecraft.world.level.block.DispenserBlock;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
@@ -53,8 +62,8 @@ import net.neoforged.neoforge.event.level.ExplosionEvent;
 public class TolerableCreepersNeoForge {
     public TolerableCreepersNeoForge(IEventBus modEventBus, ModContainer modContainer) {
         TolerableCreepers.init();
-
         NeoForgeRegistrationProvider.registerAll(modEventBus);
+        TCNeoForgeRegistries.register(modEventBus);
 
         modEventBus.addListener(this::addCreativeTabItems);
         modEventBus.addListener(this::commonSetup);
@@ -66,6 +75,7 @@ public class TolerableCreepersNeoForge {
             modEventBus.addListener(this::registerRenderers);
             modEventBus.addListener(this::registerLayerDefinitions);
             modEventBus.addListener(this::registerParticles);
+            modEventBus.addListener(this::registerAdditionalModels);
         }
 
         NeoForge.EVENT_BUS.addListener(this::onEntityJoinLevel);
@@ -76,7 +86,19 @@ public class TolerableCreepersNeoForge {
         event.enqueueWork(() -> {
             TolerableCreepers.postInit();
             ComposterBlock.COMPOSTABLES.put(TCItems.CREEPER_SPORES.get(), 0.65F);
+
+            if (ModList.get().isLoaded("nomansland") && TCNeoForgeRegistries.SPORE_BOMB != null) {
+                DispenserBlock.registerBehavior(TCNeoForgeRegistries.SPORE_BOMB.get(),
+                        new ProjectileDispenseBehavior(TCNeoForgeRegistries.SPORE_BOMB.get()));
+            }
         });
+    }
+
+    private void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
+        event.register(new ModelResourceLocation(
+                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "entity/spore_bomb"),
+                "standalone"
+        ));
     }
 
     private void registerAttributes(EntityAttributeCreationEvent event) {
@@ -86,7 +108,10 @@ public class TolerableCreepersNeoForge {
     private void addCreativeTabItems(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.COMBAT) {
             event.accept(TCItems.MISCHIEF_ARROW.get());
-            event.accept(TCItems.SPORE_BOMB.get());
+
+            if (ModList.get().isLoaded("nomansland") && TCNeoForgeRegistries.SPORE_BOMB != null) {
+                event.accept(TCNeoForgeRegistries.SPORE_BOMB.get());
+            }
         } else if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(TCItems.CREEPER_SPORES.get());
         } else if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) {
@@ -111,8 +136,10 @@ public class TolerableCreepersNeoForge {
         event.registerEntityRenderer(TCEntities.CREEPIE.get(), CreepieRenderer::new);
         event.registerEntityRenderer(TCEntities.SPORE_BARREL.get(), SporeBarrelRenderer::new);
         event.registerEntityRenderer(TCEntities.MISCHIEF_ARROW.get(), MischiefArrowRenderer::new);
-        event.registerEntityRenderer(TCEntities.FIRE_BOMB.get(), FireBombRenderer::new);
-        event.registerEntityRenderer(TCEntities.SPORE_BOMB.get(), SporeBombRenderer::new);
+
+        if (ModList.get().isLoaded("nomansland") && TCNeoForgeRegistries.SPORE_BOMB_ENTITY != null) {
+            event.registerEntityRenderer(TCNeoForgeRegistries.SPORE_BOMB_ENTITY.get(), SporeBombRenderer::new);
+        }
     }
 
     private void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {

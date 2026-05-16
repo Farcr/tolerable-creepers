@@ -2,24 +2,20 @@ package com.evandev.tolerable_creepers.common.entity.ai.sensing;
 
 import com.evandev.tolerable_creepers.common.entity.Creepie;
 import com.evandev.tolerable_creepers.core.registry.TCTags;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.NearestVisibleLivingEntitySensor;
 import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.player.Player;
-
-import java.util.HashSet;
-import java.util.Set;
+import org.jetbrains.annotations.NotNull;
 
 public class CreepieAttackablesSensor extends NearestVisibleLivingEntitySensor {
 
     public static final float TARGET_DETECTION_DISTANCE = 8.0F;
 
     @Override
-    protected boolean isMatchingEntity(LivingEntity entity, LivingEntity target) {
+    protected boolean isMatchingEntity(@NotNull LivingEntity entity, @NotNull LivingEntity target) {
         return entity instanceof Creepie creepie && this.isClose(entity, target) && this.isTarget(creepie, target) && Sensor.isEntityAttackable(entity, target);
     }
 
@@ -44,7 +40,7 @@ public class CreepieAttackablesSensor extends NearestVisibleLivingEntitySensor {
     }
 
     @Override
-    protected MemoryModuleType<LivingEntity> getMemory() {
+    protected @NotNull MemoryModuleType<LivingEntity> getMemory() {
         return MemoryModuleType.NEAREST_ATTACKABLE;
     }
 }

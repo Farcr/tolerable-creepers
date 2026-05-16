@@ -1,13 +1,14 @@
 package com.evandev.tolerable_creepers.common.entity.ai;
 
-import com.google.common.collect.ImmutableMap;
 import com.evandev.tolerable_creepers.common.entity.Creepie;
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -32,7 +33,7 @@ public class CreepieFollowOwner extends Behavior<Creepie> {
     }
 
     @Override
-    protected boolean checkExtraStartConditions(ServerLevel level, Creepie creepie) {
+    protected boolean checkExtraStartConditions(@NotNull ServerLevel level, Creepie creepie) {
         if (creepie.getCreepieType() != Creepie.CreepieType.FRIENDLY) {
             return false;
         }
@@ -41,7 +42,7 @@ public class CreepieFollowOwner extends Behavior<Creepie> {
     }
 
     @Override
-    protected void start(ServerLevel level, Creepie creepie, long time) {
+    protected void start(@NotNull ServerLevel level, Creepie creepie, long time) {
         Entity owner = Objects.requireNonNull(creepie.getOwner());
         boolean bl = owner.closerThan(creepie, this.closeEnoughDist);
         if (!bl) {

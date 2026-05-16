@@ -1,0 +1,8 @@
+{
+  "sources": [
+    {
+      "type": "single",
+      "resource": "tolerable_creepers:entity/projectiles/spore_bomb"
+    }
+  ]
+}

@@ -1,7 +1,6 @@
 package com.evandev.tolerable_creepers.common.entity.ai;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -13,6 +12,7 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.ai.util.LandRandomPos;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -39,13 +39,20 @@ public class CreepiePlayTag extends Behavior<PathfinderMob> {
         ));
     }
 
+    private static void chaseKid(PathfinderMob creepie, LivingEntity friend) {
+        Brain<?> brain = creepie.getBrain();
+        brain.setMemory(MemoryModuleType.INTERACTION_TARGET, friend);
+        brain.setMemory(MemoryModuleType.LOOK_TARGET, new EntityTracker(friend, true));
+        brain.setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(new EntityTracker(friend, false), CHASE_SPEED_MODIFIER, 1));
+    }
+
     @Override
-    protected boolean checkExtraStartConditions(ServerLevel serverLevel, PathfinderMob pathfinderMob) {
+    protected boolean checkExtraStartConditions(ServerLevel serverLevel, @NotNull PathfinderMob pathfinderMob) {
         return serverLevel.getRandom().nextInt(AVERAGE_WAIT_TIME_BETWEEN_RUNS) == 0 && this.hasFriendsNearby(pathfinderMob);
     }
 
     @Override
-    protected void start(ServerLevel serverLevel, PathfinderMob creepie, long l) {
+    protected void start(@NotNull ServerLevel serverLevel, @NotNull PathfinderMob creepie, long l) {
         LivingEntity livingEntity = this.seeIfSomeoneIsChasingMe(creepie);
         if (livingEntity != null) {
             this.fleeFromChaser(creepie);
@@ -67,13 +74,6 @@ public class CreepiePlayTag extends Behavior<PathfinderMob> {
                 return;
             }
         }
-    }
-
-    private static void chaseKid(PathfinderMob creepie, LivingEntity friend) {
-        Brain<?> brain = creepie.getBrain();
-        brain.setMemory(MemoryModuleType.INTERACTION_TARGET, friend);
-        brain.setMemory(MemoryModuleType.LOOK_TARGET, new EntityTracker(friend, true));
-        brain.setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(new EntityTracker(friend, false), CHASE_SPEED_MODIFIER, 1));
     }
 
     private Optional<LivingEntity> findSomeoneToChase(PathfinderMob creepie) {

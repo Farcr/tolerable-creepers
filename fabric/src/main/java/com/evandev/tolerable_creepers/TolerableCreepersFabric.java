@@ -43,7 +43,6 @@ public class TolerableCreepersFabric implements ModInitializer {
 
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT).register(entries -> {
             entries.accept(TCItems.MISCHIEF_ARROW.get());
-            entries.accept(TCItems.SPORE_BOMB.get());
         });
 
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(entries -> {
@@ -54,7 +53,5 @@ public class TolerableCreepersFabric implements ModInitializer {
         CompostingChanceRegistry.INSTANCE.add(TCItems.CREEPER_SPORES.get(), 0.65F);
 
         TolerableCreepers.postInit();
-
-        // TODO: For the Golem/Cat/Explosion events, register them via standard Fabric API events like ServerEntityEvents.ENTITY_LOAD
     }
 }

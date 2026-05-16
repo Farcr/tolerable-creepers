@@ -19,7 +19,6 @@ public class TCTags {
     public static TagKey<Block> CREEPIE_HIDING_SPOTS = registerBlock("creepie_hiding_spots");
     public static TagKey<Block> CREEPIE_PARTY_SPOTS = registerBlock("creepie_party_spots");
     public static TagKey<Block> CREEPIE_FORCE_PARTY_SPOTS = registerBlock("creepie_force_party_spots");
-    public static TagKey<Block> FIRE_BOMB_EXPLODE = registerBlock("fire_bomb_explode");
 
     private static TagKey<EntityType<?>> registerEntity(String name) {
         return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, name));

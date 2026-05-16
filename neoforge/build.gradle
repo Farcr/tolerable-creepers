@@ -43,6 +43,8 @@ dependencies {
 
     // Cloth Config
     implementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
+    implementation "maven.modrinth:no-mans-land:1.4.6"
+    implementation "maven.modrinth:biolith:1ZfKhpFg"
 }
 
 publishMods {
