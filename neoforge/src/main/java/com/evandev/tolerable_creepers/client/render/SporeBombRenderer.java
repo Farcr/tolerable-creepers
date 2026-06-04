@@ -2,7 +2,7 @@ package com.evandev.tolerable_creepers.client.render;
 
 import com.evandev.tolerable_creepers.Constants;
 import com.evandev.tolerable_creepers.common.entity.SporeBomb;
-import com.farcr.nomansland.client.renderer.ThrowableBombRenderer;
+import com.farcr.nomansland.client.renderer.entity.ThrowableBombRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
