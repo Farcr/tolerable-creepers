@@ -25,6 +25,7 @@ import net.minecraft.core.dispenser.ProjectileDispenseBehavior;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
@@ -176,8 +177,13 @@ public class TolerableCreepersNeoForge {
         entityList.removeIf(entity -> !(entity instanceof LivingEntity || entity.getType().is(TCTags.EXPLOSION_PRONE)) || entity.getType().is(TCTags.EXPLOSION_IMMUNE));
 
         if (explosion.getIndirectSourceEntity() instanceof Creeper creeper) {
-            event.getAffectedBlocks().clear();
-            if (creeper.getType() != net.minecraft.world.entity.EntityType.CREEPER) return;
+            EntityType<?> type = creeper.getType();
+
+            if (!type.is(TCTags.EXPLOSION_PRONE) && (type == EntityType.CREEPER || type == TCEntities.CREEPIE.get() || type.is(TCTags.EXPLOSION_IMMUNE))) {
+                event.getAffectedBlocks().clear();
+            }
+
+            if (type != EntityType.CREEPER) return;
 
             boolean day = level.getBrightness(LightLayer.SKY, creeper.blockPosition()) > 10 && level.isDay();
             RandomSource random = creeper.getRandom();

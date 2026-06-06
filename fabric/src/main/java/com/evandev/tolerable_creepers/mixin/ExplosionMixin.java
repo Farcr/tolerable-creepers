@@ -1,9 +1,11 @@
 package com.evandev.tolerable_creepers.mixin;
 
 import com.evandev.tolerable_creepers.common.entity.CreeperSpores;
+import com.evandev.tolerable_creepers.core.registry.TCEntities;
 import com.evandev.tolerable_creepers.core.registry.TCTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.level.Explosion;
@@ -47,9 +49,13 @@ public abstract class ExplosionMixin {
     private void onDetonateTail(CallbackInfo ci) {
         LivingEntity source = this.getIndirectSourceEntity();
         if (source instanceof Creeper creeper) {
-            this.clearToBlow();
+            EntityType<?> type = creeper.getType();
 
-            if (creeper.getType() != net.minecraft.world.entity.EntityType.CREEPER) return;
+            if (!type.is(TCTags.EXPLOSION_PRONE) && (type == EntityType.CREEPER || type == TCEntities.CREEPIE.get() || type.is(TCTags.EXPLOSION_IMMUNE))) {
+                this.clearToBlow();
+            }
+
+            if (type != EntityType.CREEPER) return;
 
             boolean day = level.getBrightness(LightLayer.SKY, creeper.blockPosition()) > 10 && level.isDay();
             RandomSource random = creeper.getRandom();
