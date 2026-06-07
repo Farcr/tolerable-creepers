@@ -1,6 +1,4 @@
 {
-  "config.tolerable_creepers.title": "Tolerable Creepers Config",
-  "config.tolerable_creepers.category.general": "General",
   "block.tolerable_creepers.spore_barrel": "Spore Barrel",
   "entity.tolerable_creepers.creeper_spores": "Creeper Spores",
   "entity.tolerable_creepers.creepie": "Creepie",
@@ -8,5 +6,16 @@
   "item.tolerable_creepers.creepie_spawn_egg": "Creepie Spawn Egg",
   "item.tolerable_creepers.creeper_spores": "Creeper Spores",
   "item.tolerable_creepers.mischief_arrow": "Mischief Arrow",
-  "item.tolerable_creepers.spore_bomb": "Spore Bomb"
+  "item.tolerable_creepers.spore_bomb": "Spore Bomb",
+
+  "config.tolerable_creepers.title": "Tolerable Creepers Config",
+  "config.tolerable_creepers.category.general": "General Settings",
+  "config.tolerable_creepers.prevent_block_damage": "Prevent Creeper Block Damage",
+  "config.tolerable_creepers.prevent_block_damage.tooltip": "If true, Creepers and Creepies will not destroy blocks when they explode.",
+  "config.tolerable_creepers.explosion_radius": "Creepie Explosion Radius",
+  "config.tolerable_creepers.explosion_radius.tooltip": "Determines the blast size/damage of a Creepie. (Default: 1)",
+  "config.tolerable_creepers.spore_day_base": "Daytime Spores (Base)",
+  "config.tolerable_creepers.spore_day_random": "Daytime Spores (Random Extra)",
+  "config.tolerable_creepers.spore_night_base": "Nighttime Spores (Base)",
+  "config.tolerable_creepers.spore_night_random": "Nighttime Spores (Random Extra)"
 }

@@ -1,6 +1,7 @@
 package com.evandev.tolerable_creepers.common.entity;
 
 import com.evandev.tolerable_creepers.Constants;
+import com.evandev.tolerable_creepers.config.ModConfig;
 import com.evandev.tolerable_creepers.core.extension.CreeperExtension;
 import com.evandev.tolerable_creepers.core.mixin.accessor.CreeperAccessor;
 import com.evandev.tolerable_creepers.core.registry.TCEntities;
@@ -121,7 +122,7 @@ public class Creepie extends Creeper {
     public Creepie(EntityType<? extends Creepie> entityType, Level level) {
         super(entityType, level);
         this.age = -24000;
-        ((CreeperAccessor) this).setExplosionRadius(1);
+        ((CreeperAccessor) this).setExplosionRadius(ModConfig.get().creepieExplosionRadius);
     }
 
     public Creepie(Level level, @Nullable Entity owner, boolean powered) {

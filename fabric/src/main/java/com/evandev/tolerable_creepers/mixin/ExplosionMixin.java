@@ -1,6 +1,7 @@
 package com.evandev.tolerable_creepers.mixin;
 
 import com.evandev.tolerable_creepers.common.entity.CreeperSpores;
+import com.evandev.tolerable_creepers.config.ModConfig;
 import com.evandev.tolerable_creepers.core.registry.TCEntities;
 import com.evandev.tolerable_creepers.core.registry.TCTags;
 import net.minecraft.util.RandomSource;
@@ -51,15 +52,22 @@ public abstract class ExplosionMixin {
         if (source instanceof Creeper creeper) {
             EntityType<?> type = creeper.getType();
 
-            if (!type.is(TCTags.EXPLOSION_PRONE) && (type == EntityType.CREEPER || type == TCEntities.CREEPIE.get() || type.is(TCTags.EXPLOSION_IMMUNE))) {
-                this.clearToBlow();
+            if (ModConfig.get().preventCreeperBlockDamage) {
+                if (!type.is(TCTags.EXPLOSION_PRONE) && (type == EntityType.CREEPER || type == TCEntities.CREEPIE.get() || type.is(TCTags.EXPLOSION_IMMUNE))) {
+                    this.clearToBlow();
+                }
             }
 
             if (type != EntityType.CREEPER) return;
 
             boolean day = level.getBrightness(LightLayer.SKY, creeper.blockPosition()) > 10 && level.isDay();
             RandomSource random = creeper.getRandom();
-            int sporeCount = Math.round(((day ? 1 : 2) + random.nextInt(day ? 2 : 3)) * creeper.getHealth() / creeper.getMaxHealth());
+
+            int baseCount = day ? ModConfig.get().sporeCountDayBase : ModConfig.get().sporeCountNightBase;
+            int randomBound = day ? ModConfig.get().sporeCountDayRandom : ModConfig.get().sporeCountNightRandom;
+
+            int randomAdd = randomBound > 0 ? random.nextInt(randomBound) : 0;
+            int sporeCount = Math.round((baseCount + randomAdd) * creeper.getHealth() / creeper.getMaxHealth());
 
             CreeperSpores creeperSpores = new CreeperSpores(level, creeper.getX(), creeper.getY() + 0.01, creeper.getZ(), sporeCount, creeper.isPowered());
             if (!creeper.isInvisible()) creeperSpores.setOwner(creeper);

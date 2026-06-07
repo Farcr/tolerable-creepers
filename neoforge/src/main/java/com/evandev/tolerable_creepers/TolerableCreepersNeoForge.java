@@ -6,10 +6,11 @@ import com.evandev.tolerable_creepers.client.particle.CreeperSporesParticle;
 import com.evandev.tolerable_creepers.client.render.CreepieRenderer;
 import com.evandev.tolerable_creepers.client.render.MischiefArrowRenderer;
 import com.evandev.tolerable_creepers.client.render.SporeBarrelRenderer;
-import com.evandev.tolerable_creepers.client.render.SporeBombRenderer;
 import com.evandev.tolerable_creepers.common.TCNeoForgeRegistries;
 import com.evandev.tolerable_creepers.common.entity.CreeperSpores;
 import com.evandev.tolerable_creepers.common.entity.Creepie;
+import com.evandev.tolerable_creepers.common.integration.NMLCompat;
+import com.evandev.tolerable_creepers.config.ModConfig;
 import com.evandev.tolerable_creepers.core.TolerableCreepers;
 import com.evandev.tolerable_creepers.core.mixin.accessor.MobAccessor;
 import com.evandev.tolerable_creepers.core.registry.TCEntities;
@@ -21,7 +22,6 @@ import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.dispenser.ProjectileDispenseBehavior;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -42,7 +42,6 @@ import net.minecraft.world.item.component.ChargedProjectiles;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.ComposterBlock;
-import net.minecraft.world.level.block.DispenserBlock;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
@@ -88,11 +87,36 @@ public class TolerableCreepersNeoForge {
             TolerableCreepers.postInit();
             ComposterBlock.COMPOSTABLES.put(TCItems.CREEPER_SPORES.get(), 0.65F);
 
-            if (ModList.get().isLoaded("nomansland") && TCNeoForgeRegistries.SPORE_BOMB != null) {
-                DispenserBlock.registerBehavior(TCNeoForgeRegistries.SPORE_BOMB.get(),
-                        new ProjectileDispenseBehavior(TCNeoForgeRegistries.SPORE_BOMB.get()));
+            if (ModList.get().isLoaded("nomansland")) {
+                NMLCompat.commonSetup();
             }
         });
+    }
+
+    private void addCreativeTabItems(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTabKey() == CreativeModeTabs.COMBAT) {
+            event.accept(TCItems.MISCHIEF_ARROW.get());
+            event.accept(TCItems.SPORE_BARREL.get());
+
+            if (ModList.get().isLoaded("nomansland")) {
+                NMLCompat.addCreativeTabItems(event);
+            }
+        } else if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
+            event.accept(TCItems.CREEPER_SPORES.get());
+        } else if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) {
+            event.accept(TCItems.CREEPIE_SPAWN_EGG.get());
+        }
+    }
+
+    private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(TCEntities.CREEPER_SPORES.get(), NoopRenderer::new);
+        event.registerEntityRenderer(TCEntities.CREEPIE.get(), CreepieRenderer::new);
+        event.registerEntityRenderer(TCEntities.SPORE_BARREL.get(), SporeBarrelRenderer::new);
+        event.registerEntityRenderer(TCEntities.MISCHIEF_ARROW.get(), MischiefArrowRenderer::new);
+
+        if (ModList.get().isLoaded("nomansland")) {
+            NMLCompat.registerRenderers(event);
+        }
     }
 
     private void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
@@ -106,21 +130,6 @@ public class TolerableCreepersNeoForge {
         event.put(TCEntities.CREEPIE.get(), Creepie.createAttributes().build());
     }
 
-    private void addCreativeTabItems(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.COMBAT) {
-            event.accept(TCItems.MISCHIEF_ARROW.get());
-            event.accept(TCItems.SPORE_BARREL.get());
-
-            if (ModList.get().isLoaded("nomansland") && TCNeoForgeRegistries.SPORE_BOMB != null) {
-                event.accept(TCNeoForgeRegistries.SPORE_BOMB.get());
-            }
-        } else if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
-            event.accept(TCItems.CREEPER_SPORES.get());
-        } else if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) {
-            event.accept(TCItems.CREEPIE_SPAWN_EGG.get());
-        }
-    }
-
     private void clientSetup(final FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             ItemProperties.register(Items.CROSSBOW, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "mischief_arrow"),
@@ -131,17 +140,6 @@ public class TolerableCreepersNeoForge {
                     }
             );
         });
-    }
-
-    private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(TCEntities.CREEPER_SPORES.get(), NoopRenderer::new);
-        event.registerEntityRenderer(TCEntities.CREEPIE.get(), CreepieRenderer::new);
-        event.registerEntityRenderer(TCEntities.SPORE_BARREL.get(), SporeBarrelRenderer::new);
-        event.registerEntityRenderer(TCEntities.MISCHIEF_ARROW.get(), MischiefArrowRenderer::new);
-
-        if (ModList.get().isLoaded("nomansland") && TCNeoForgeRegistries.SPORE_BOMB_ENTITY != null) {
-            event.registerEntityRenderer(TCNeoForgeRegistries.SPORE_BOMB_ENTITY.get(), SporeBombRenderer::new);
-        }
     }
 
     private void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
@@ -179,15 +177,22 @@ public class TolerableCreepersNeoForge {
         if (explosion.getIndirectSourceEntity() instanceof Creeper creeper) {
             EntityType<?> type = creeper.getType();
 
-            if (!type.is(TCTags.EXPLOSION_PRONE) && (type == EntityType.CREEPER || type == TCEntities.CREEPIE.get() || type.is(TCTags.EXPLOSION_IMMUNE))) {
-                event.getAffectedBlocks().clear();
+            if (ModConfig.get().preventCreeperBlockDamage) {
+                if (!type.is(TCTags.EXPLOSION_PRONE) && (type == EntityType.CREEPER || type == TCEntities.CREEPIE.get() || type.is(TCTags.EXPLOSION_IMMUNE))) {
+                    event.getAffectedBlocks().clear();
+                }
             }
 
             if (type != EntityType.CREEPER) return;
 
             boolean day = level.getBrightness(LightLayer.SKY, creeper.blockPosition()) > 10 && level.isDay();
             RandomSource random = creeper.getRandom();
-            int sporeCount = Math.round(((day ? 1 : 2) + random.nextInt(day ? 2 : 3)) * creeper.getHealth() / creeper.getMaxHealth());
+
+            int baseCount = day ? ModConfig.get().sporeCountDayBase : ModConfig.get().sporeCountNightBase;
+            int randomBound = day ? ModConfig.get().sporeCountDayRandom : ModConfig.get().sporeCountNightRandom;
+
+            int randomAdd = randomBound > 0 ? random.nextInt(randomBound) : 0;
+            int sporeCount = Math.round((baseCount + randomAdd) * creeper.getHealth() / creeper.getMaxHealth());
 
             CreeperSpores creeperSpores = new CreeperSpores(level, creeper.getX(), creeper.getY() + 0.01, creeper.getZ(), sporeCount, creeper.isPowered());
             if (!creeper.isInvisible()) creeperSpores.setOwner(creeper);

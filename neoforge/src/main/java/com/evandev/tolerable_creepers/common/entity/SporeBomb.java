@@ -1,6 +1,6 @@
 package com.evandev.tolerable_creepers.common.entity;
 
-import com.evandev.tolerable_creepers.common.TCNeoForgeRegistries;
+import com.evandev.tolerable_creepers.common.integration.NMLCompat;
 import com.evandev.tolerable_creepers.core.registry.TCParticles;
 import com.farcr.nomansland.common.entity.bombs.ThrowableBombEntity;
 import net.minecraft.core.BlockPos;
@@ -29,11 +29,11 @@ public class SporeBomb extends ThrowableBombEntity {
     }
 
     public SporeBomb(LivingEntity livingEntity, Level level) {
-        super(TCNeoForgeRegistries.SPORE_BOMB_ENTITY.get(), livingEntity, level);
+        super(NMLCompat.SPORE_BOMB_ENTITY.get(), livingEntity, level);
     }
 
     public SporeBomb(Level level, double x, double y, double z) {
-        super(TCNeoForgeRegistries.SPORE_BOMB_ENTITY.get(), x, y, z, level);
+        super(NMLCompat.SPORE_BOMB_ENTITY.get(), x, y, z, level);
     }
 
     @Override

@@ -15,6 +15,14 @@ public class ModConfig {
     private static final File CONFIG_FILE = Services.PLATFORM.getConfigDirectory().resolve("tolerable_creepers.json").toFile();
     private static ModConfig INSTANCE;
 
+    public boolean preventCreeperBlockDamage = true;
+    public int creepieExplosionRadius = 1;
+
+    public int sporeCountDayBase = 1;
+    public int sporeCountDayRandom = 2;
+    public int sporeCountNightBase = 2;
+    public int sporeCountNightRandom = 3;
+
     public static ModConfig get() {
         if (INSTANCE == null) {
             load();
