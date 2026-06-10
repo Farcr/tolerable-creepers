@@ -18,7 +18,7 @@ public class CreepieRenderer extends MobRenderer<Creepie, CreepieModel<Creepie>>
 
     @Override
     protected void scale(Creepie creepie, PoseStack poseStack, float partialTicks) {
-        float g = creepie.getSwelling(partialTicks);
+        float g = creepie.getSwelling(partialTicks) * (30.0F / 15.0F);
         float h = 1.0F + Mth.sin(g * 100.0F) * g * 0.01F;
         g = Mth.clamp(g, 0.0F, 1.0F);
         g *= g * g;
@@ -29,7 +29,7 @@ public class CreepieRenderer extends MobRenderer<Creepie, CreepieModel<Creepie>>
 
     @Override
     protected float getWhiteOverlayProgress(Creepie creepie, float partialTicks) {
-        float swell = creepie.getSwelling(partialTicks);
+        float swell = creepie.getSwelling(partialTicks) * (30.0F / 15.0F);
         return (int) (swell * 10.0F) % 2 == 0 ? 0.0F : Mth.clamp(swell, 0.5F, 1.0F);
     }
 

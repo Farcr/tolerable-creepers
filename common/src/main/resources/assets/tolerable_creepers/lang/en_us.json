@@ -13,7 +13,7 @@
   "config.tolerable_creepers.prevent_block_damage": "Prevent Creeper Block Damage",
   "config.tolerable_creepers.prevent_block_damage.tooltip": "If true, Creepers and Creepies will not destroy blocks when they explode.",
   "config.tolerable_creepers.explosion_radius": "Creepie Explosion Radius",
-  "config.tolerable_creepers.explosion_radius.tooltip": "Determines the blast size/damage of a Creepie. (Default: 1)",
+  "config.tolerable_creepers.explosion_radius.tooltip": "Determines the blast size/damage of a Creepie. (Default: 2)",
   "config.tolerable_creepers.spore_day_base": "Daytime Spores (Base)",
   "config.tolerable_creepers.spore_day_random": "Daytime Spores (Random Extra)",
   "config.tolerable_creepers.spore_night_base": "Nighttime Spores (Base)",

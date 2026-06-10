@@ -16,12 +16,12 @@ public class ModConfig {
     private static ModConfig INSTANCE;
 
     public boolean preventCreeperBlockDamage = true;
-    public int creepieExplosionRadius = 1;
+    public int creepieExplosionRadius = 2;
 
     public int sporeCountDayBase = 1;
     public int sporeCountDayRandom = 2;
-    public int sporeCountNightBase = 2;
-    public int sporeCountNightRandom = 3;
+    public int sporeCountNightBase = 3;
+    public int sporeCountNightRandom = 4;
 
     public static ModConfig get() {
         if (INSTANCE == null) {

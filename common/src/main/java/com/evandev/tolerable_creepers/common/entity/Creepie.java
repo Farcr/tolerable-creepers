@@ -23,6 +23,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -44,6 +45,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -56,10 +58,12 @@ public class Creepie extends Creeper {
      * The maximum distance a creeper can be from a creepie before it becomes sad.
      */
     public static final double CREEPER_DISTANCE = 32.0D;
+
     /**
      * After 6000 ticks (2 minutes) of a creepie being sad, it disappears.
      */
     public static final int MAXIMUM_SAD_TIME = 6000;
+
     /**
      * The distance to check for jukeboxes and spore blossoms.
      */
@@ -114,6 +118,9 @@ public class Creepie extends Creeper {
     private int sadAnimationTimer = -1;
     private int noveltyTimer;
 
+    private int customFuseTime = 15;
+    private int currentFuse = 0;
+
     @Nullable
     private UUID ownerUUID;
     @Nullable
@@ -133,7 +140,7 @@ public class Creepie extends Creeper {
     }
 
     public static AttributeSupplier.@NotNull Builder createAttributes() {
-        return Creeper.createAttributes().add(Attributes.MAX_HEALTH, 3.0).add(Attributes.MOVEMENT_SPEED, 0.345);
+        return Creeper.createAttributes().add(Attributes.MAX_HEALTH, 6.0).add(Attributes.MOVEMENT_SPEED, 0.345);
     }
 
     private void updateState() {
@@ -202,6 +209,51 @@ public class Creepie extends Creeper {
                     }
                 }
             }
+
+            if (this.isAlive()) {
+                int swellDir = this.getSwellDir();
+                if (this.isIgnited()) {
+                    swellDir = 1;
+                }
+
+                this.currentFuse += swellDir;
+
+                if (this.currentFuse < 0) {
+                    this.currentFuse = 0;
+                }
+
+                if (this.currentFuse >= this.customFuseTime) {
+                    this.explodeCustom();
+                }
+            }
+        }
+    }
+
+    protected void explodeCustom() {
+        if (!this.level().isClientSide()) {
+            float f = this.isPowered() ? 2.0F : 1.0F;
+            this.dead = true;
+            this.level().explode(this, this.getX(), this.getY(), this.getZ(), ModConfig.get().creepieExplosionRadius * f, Level.ExplosionInteraction.NONE);
+            this.discard();
+            this.spawnLingeringCloudCustom();
+        }
+    }
+
+    private void spawnLingeringCloudCustom() {
+        Collection<MobEffectInstance> collection = this.getActiveEffects();
+        if (!collection.isEmpty()) {
+            AreaEffectCloud areaeffectcloud = new AreaEffectCloud(this.level(), this.getX(), this.getY(), this.getZ());
+            areaeffectcloud.setRadius(2.5F);
+            areaeffectcloud.setRadiusOnUse(-0.5F);
+            areaeffectcloud.setWaitTime(10);
+            areaeffectcloud.setDuration(areaeffectcloud.getDuration() / 2);
+            areaeffectcloud.setRadiusPerTick(-areaeffectcloud.getRadius() / (float) areaeffectcloud.getDuration());
+
+            for (MobEffectInstance mobeffectinstance : collection) {
+                areaeffectcloud.addEffect(new MobEffectInstance(mobeffectinstance));
+            }
+
+            this.level().addFreshEntity(areaeffectcloud);
         }
     }
 
@@ -268,6 +320,7 @@ public class Creepie extends Creeper {
         nbt.putInt("Age", this.getAge());
         nbt.putInt("ForcedAge", this.forcedAge);
         nbt.putInt("SadTime", this.sadTimer);
+        nbt.putInt("CurrentFuse", this.currentFuse);
     }
 
     @Override
@@ -278,6 +331,7 @@ public class Creepie extends Creeper {
         this.setAge(nbt.contains("Age", Tag.TAG_ANY_NUMERIC) ? nbt.getInt("Age") : -24000);
         this.forcedAge = nbt.getInt("ForcedAge");
         this.sadTimer = nbt.getInt("SadTime");
+        this.currentFuse = nbt.getInt("CurrentFuse");
     }
 
     @Nullable
@@ -409,7 +463,6 @@ public class Creepie extends Creeper {
                 LivingEntity myTarget = this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null);
                 LivingEntity theirTarget = otherCreepie.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null);
                 if (myTarget != null && myTarget.equals(theirTarget)) {
-
                     Vec3 knockbackDir = this.position().subtract(otherCreepie.position());
 
                     if (knockbackDir.lengthSqr() < 1.0E-4D) {
@@ -417,13 +470,12 @@ public class Creepie extends Creeper {
                     }
 
                     knockbackDir = knockbackDir.normalize().scale(0.8D);
-
                     this.setDeltaMovement(this.getDeltaMovement().add(knockbackDir.x, 0.25D, knockbackDir.z));
                     this.hasImpulse = true;
-
-                    return false;
                 }
             }
+
+            return false;
         }
 
         boolean bl = super.hurt(source, amount);

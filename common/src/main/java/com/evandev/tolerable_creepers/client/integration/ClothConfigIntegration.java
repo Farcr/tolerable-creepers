@@ -27,7 +27,7 @@ public class ClothConfigIntegration {
                 .build());
 
         general.addEntry(entryBuilder.startIntField(Component.translatable("config.tolerable_creepers.explosion_radius"), config.creepieExplosionRadius)
-                .setDefaultValue(1)
+                .setDefaultValue(2)
                 .setTooltip(Component.translatable("config.tolerable_creepers.explosion_radius.tooltip"))
                 .setSaveConsumer(newValue -> config.creepieExplosionRadius = newValue)
                 .build());
@@ -43,12 +43,12 @@ public class ClothConfigIntegration {
                 .build());
 
         general.addEntry(entryBuilder.startIntField(Component.translatable("config.tolerable_creepers.spore_night_base"), config.sporeCountNightBase)
-                .setDefaultValue(2)
+                .setDefaultValue(3)
                 .setSaveConsumer(newValue -> config.sporeCountNightBase = newValue)
                 .build());
 
         general.addEntry(entryBuilder.startIntField(Component.translatable("config.tolerable_creepers.spore_night_random"), config.sporeCountNightRandom)
-                .setDefaultValue(3)
+                .setDefaultValue(4)
                 .setSaveConsumer(newValue -> config.sporeCountNightRandom = newValue)
                 .build());
 
