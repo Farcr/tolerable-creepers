@@ -33,7 +33,7 @@ public abstract class CreeperMixin extends Monster implements CreeperExtension {
     private static EntityDataAccessor<Boolean> DATA_IS_POWERED;
 
     @Unique
-    private boolean exploded;
+    private boolean tolerablecreepers$exploded;
 
     private CreeperMixin(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
@@ -54,12 +54,12 @@ public abstract class CreeperMixin extends Monster implements CreeperExtension {
 
     @Override
     protected void dropFromLootTable(@NotNull DamageSource damageSource, boolean bl) {
-        this.exploded = this.getType() == EntityType.CREEPER && damageSource.is(DamageTypeTags.IS_EXPLOSION);
+        this.tolerablecreepers$exploded = this.getType() == EntityType.CREEPER && damageSource.is(DamageTypeTags.IS_EXPLOSION);
         super.dropFromLootTable(damageSource, bl);
     }
 
     @Override
     protected @NotNull ResourceKey<LootTable> getDefaultLootTable() {
-        return this.exploded ? DETONATE_LOOT_TABLE : super.getDefaultLootTable();
+        return this.tolerablecreepers$exploded ? DETONATE_LOOT_TABLE : super.getDefaultLootTable();
     }
 }

@@ -459,23 +459,25 @@ public class Creepie extends Creeper {
                 otherCreepie = c;
             }
 
-            if (otherCreepie != null && otherCreepie != this) {
-                LivingEntity myTarget = this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null);
-                LivingEntity theirTarget = otherCreepie.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null);
-                if (myTarget != null && myTarget.equals(theirTarget)) {
-                    Vec3 knockbackDir = this.position().subtract(otherCreepie.position());
+            if (otherCreepie != null) {
+                if (otherCreepie != this) {
+                    LivingEntity myTarget = this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null);
+                    LivingEntity theirTarget = otherCreepie.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null);
+                    if (myTarget != null && myTarget.equals(theirTarget)) {
+                        Vec3 knockbackDir = this.position().subtract(otherCreepie.position());
 
-                    if (knockbackDir.lengthSqr() < 1.0E-4D) {
-                        knockbackDir = new Vec3(this.random.nextDouble() - 0.5D, 0.0D, this.random.nextDouble() - 0.5D);
+                        if (knockbackDir.lengthSqr() < 1.0E-4D) {
+                            knockbackDir = new Vec3(this.random.nextDouble() - 0.5D, 0.0D, this.random.nextDouble() - 0.5D);
+                        }
+
+                        knockbackDir = knockbackDir.normalize().scale(0.8D);
+                        this.setDeltaMovement(this.getDeltaMovement().add(knockbackDir.x, 0.25D, knockbackDir.z));
+                        this.hasImpulse = true;
                     }
-
-                    knockbackDir = knockbackDir.normalize().scale(0.8D);
-                    this.setDeltaMovement(this.getDeltaMovement().add(knockbackDir.x, 0.25D, knockbackDir.z));
-                    this.hasImpulse = true;
                 }
-            }
 
-            return false;
+                return false;
+            }
         }
 
         boolean bl = super.hurt(source, amount);
