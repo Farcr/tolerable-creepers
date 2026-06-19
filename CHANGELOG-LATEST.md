@@ -1,4 +1,3 @@
 ### Fixed
 
-- Fixed loot table paths.
-- Fixed Creepies being immune to all explosion damage.
+- Fixed log warning when No Man's Land isn't installed.
