@@ -23,9 +23,6 @@
     ],
     "modmenu": [
       "com.evandev.tolerable_creepers.compat.ModMenuIntegration"
-    ],
-    "fabric-datagen": [
-      "com.evandev.tolerable_creepers.datagen.TemplateDataGenerator"
     ]
   },
   "mixins": [
