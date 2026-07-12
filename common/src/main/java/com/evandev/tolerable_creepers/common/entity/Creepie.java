@@ -49,9 +49,6 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.UUID;
 
-/**
- * @author Ocelot
- */
 public class Creepie extends Creeper {
 
     /**
@@ -143,6 +140,13 @@ public class Creepie extends Creeper {
         return Creeper.createAttributes().add(Attributes.MAX_HEALTH, 6.0).add(Attributes.MOVEMENT_SPEED, 0.345);
     }
 
+    /**
+     * Ticks it takes {@link #currentFuse} to reach this before {@link #explodeCustom()} fires.
+     */
+    protected void setFuseTime(int fuseTime) {
+        this.customFuseTime = fuseTime;
+    }
+
     private void updateState() {
         Entity owner = this.getOwner();
         if (owner != null) {
@@ -227,6 +231,11 @@ public class Creepie extends Creeper {
                 }
             }
         }
+    }
+
+    @Override
+    protected void explodeCreeper() {
+        this.explodeCustom();
     }
 
     protected void explodeCustom() {
@@ -518,6 +527,17 @@ public class Creepie extends Creeper {
 
     public boolean canMove() {
         return !this.isDancing() && this.sadAnimationTimer <= 0 && !this.isHiding();
+    }
+
+    public boolean canFight() {
+        return true;
+    }
+
+    /**
+     * Distance (in blocks) a fight target can stray from this creepie before its fuse resets.
+     */
+    public double getSwellRange() {
+        return 5.0D;
     }
 
     public boolean isHiding() {

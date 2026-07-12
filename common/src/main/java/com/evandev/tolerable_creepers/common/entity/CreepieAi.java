@@ -233,7 +233,7 @@ public class CreepieAi {
                     brain.eraseMemory(MemoryModuleType.AVOID_TARGET);
             });
 
-            if (Sensor.isEntityAttackableIgnoringLineOfSight(creepie, attacker)) {
+            if (creepie.canFight() && Sensor.isEntityAttackableIgnoringLineOfSight(creepie, attacker)) {
                 creepie.getBrain().eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
                 creepie.getBrain().setMemory(MemoryModuleType.ATTACK_TARGET, attacker);
             }

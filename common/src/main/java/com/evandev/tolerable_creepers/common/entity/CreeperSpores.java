@@ -3,6 +3,7 @@ package com.evandev.tolerable_creepers.common.entity;
 import com.evandev.tolerable_creepers.core.registry.TCEntities;
 import com.evandev.tolerable_creepers.core.registry.TCParticles;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -16,7 +17,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -33,7 +33,6 @@ public class CreeperSpores extends ThrowableProjectile {
     private static final EntityDataAccessor<Integer> CLOUD_SIZE = SynchedEntityData.defineId(CreeperSpores.class, EntityDataSerializers.INT);
 
     private Creepie spawnCreepie;
-    private boolean creeperOwner;
     @Nullable
     private LivingEntity target;
     private int cloudTime;
@@ -75,6 +74,10 @@ public class CreeperSpores extends ThrowableProjectile {
     }
 
     public static void spawnParticleSphere(Entity entity, RandomSource random, Vec3 pos, int amount, float cloudSize) {
+        spawnParticleSphere(entity, random, pos, amount, cloudSize, TCParticles.CREEPER_SPORES.get());
+    }
+
+    public static void spawnParticleSphere(Entity entity, RandomSource random, Vec3 pos, int amount, float cloudSize, SimpleParticleType particleType) {
         for (int i = 0; i < 4 * amount * cloudSize; i++) {
             float theta = (float) (random.nextFloat() * 2 * Math.PI);
             float phi = (float) (random.nextFloat() * 2 * Math.PI);
@@ -85,9 +88,9 @@ public class CreeperSpores extends ThrowableProjectile {
 
             if (entity.level().clip(new ClipContext(pos, pos.add(xPos, yPos, zPos), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity)).getType() == HitResult.Type.MISS) {
                 if (entity.level().isClientSide()) {
-                    entity.level().addParticle(TCParticles.CREEPER_SPORES.get(), true, pos.x() + xPos, pos.y() + yPos, pos.z() + zPos, 0.0D, 0.0D, 0.0D);
+                    entity.level().addParticle(particleType, true, pos.x() + xPos, pos.y() + yPos, pos.z() + zPos, 0.0D, 0.0D, 0.0D);
                 } else {
-                    ((ServerLevel) entity.level()).sendParticles(TCParticles.CREEPER_SPORES.get(), pos.x() + xPos, pos.y() + yPos, pos.z() + zPos, 1, 0.0D, 0.0D, 0.0D, 0.0);
+                    ((ServerLevel) entity.level()).sendParticles(particleType, pos.x() + xPos, pos.y() + yPos, pos.z() + zPos, 1, 0.0D, 0.0D, 0.0D, 0.0);
                 }
             }
         }
@@ -96,7 +99,6 @@ public class CreeperSpores extends ThrowableProjectile {
     @Override
     public void setOwner(@Nullable Entity entity) {
         super.setOwner(entity);
-        this.creeperOwner = entity instanceof Creeper;
         this.target = entity instanceof Mob mob ? updateTarget(mob) : null;
     }
 
@@ -115,16 +117,17 @@ public class CreeperSpores extends ThrowableProjectile {
 
         this.setDeltaMovement(Vec3.ZERO);
         if (landed != this.hasLanded()) {
-            int cloudSize = this.getCloudSize();
             if (this.level().isClientSide()) {
-                for (int i = 0; i < 30 * cloudSize; i++) {
+                float visualSize = this.getVisualCloudSize();
+                int particleCount = Math.round(30 * visualSize);
+                for (int i = 0; i < particleCount; i++) {
                     double theta = this.random.nextFloat() * 2 * Math.PI;
-                    double xVelocity = Math.cos(theta) * (this.random.nextFloat() * 0.3 + 0.7) * cloudSize;
-                    double zVelocity = Math.sin(theta) * (this.random.nextFloat() * 0.3 + 0.7) * cloudSize;
-                    this.level().addParticle(TCParticles.CREEPER_SPORES.get(), false, this.getX(), this.getY(), this.getZ(), xVelocity, this.random.nextFloat() * 0.2, zVelocity);
+                    double xVelocity = Math.cos(theta) * (this.random.nextFloat() * 0.3 + 0.7) * visualSize;
+                    double zVelocity = Math.sin(theta) * (this.random.nextFloat() * 0.3 + 0.7) * visualSize;
+                    this.level().addParticle(this.getSporeParticleType(), false, this.getX(), this.getY(), this.getZ(), xVelocity, this.random.nextFloat() * 0.2, zVelocity);
                 }
             } else {
-                this.cloudTime = 20 * cloudSize + 200; // 10 seconds above cloud size
+                this.cloudTime = this.getInitialCloudTime(this.getCloudSize());
             }
 
             this.setPos(hitResult.getLocation());
@@ -137,12 +140,15 @@ public class CreeperSpores extends ThrowableProjectile {
             super.tick();
 
         if (!this.hasLanded()) {
-            this.level().addParticle(TCParticles.CREEPER_SPORES.get(), true, this.getX(), this.getY(), this.getZ(), 0.0f, 0.0f, 0.0f);
+            this.level().addParticle(this.getSporeParticleType(), true, this.getX(), this.getY(), this.getZ(), 0.0f, 0.0f, 0.0f);
         } else {
-            if (this.getCloudSize() <= 0)
+            if (this.getCloudSize() <= 0) {
                 this.discard();
+                return;
+            }
+
             if (this.level().isClientSide()) {
-                this.spawnParticleSphere(this.position(), 1, this.getCloudSize());
+                this.tickLandedClient();
             } else {
                 this.cloudTime--;
                 if (this.cloudTime <= 0) {
@@ -150,44 +156,94 @@ public class CreeperSpores extends ThrowableProjectile {
                     return;
                 }
 
-                if (this.spawnCreepie == null && this.cloudTime % 10 == 0) {
-                    int cloudSize = this.getCloudSize();
-                    this.spawnCreepie = null;
-                    for (int i = 0; i < 4 * cloudSize; i++) {
-                        float theta = (float) (this.random.nextFloat() * 2 * Math.PI);
-                        float phi = (float) (this.random.nextFloat() * 2 * Math.PI);
-
-                        double xPos = this.getX() + Mth.sin(phi) * Mth.cos(theta) * cloudSize * this.random.nextFloat();
-                        double zPos = this.getZ() + Mth.cos(phi) * cloudSize * this.random.nextFloat();
-                        double yPos = this.getY();
-
-                        if (this.level().clip(new ClipContext(this.position(), new Vec3(xPos, yPos, zPos), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)).getType() == HitResult.Type.MISS) {
-                            Vec3 creepieSpawnPos = new Vec3(xPos, yPos, zPos);
-                            this.spawnCreepie = new Creepie(this.level(), this.getOwner(), this.isPowered());
-                            this.spawnCreepie.getBrain().setMemory(MemoryModuleType.ATTACK_TARGET, this.target);
-                            if (this.creeperOwner) {
-                                this.spawnCreepie.setType(Creepie.CreepieType.NORMAL);
-                            }
-                            this.spawnCreepie.setPos(creepieSpawnPos);
-
-                            this.spawnParticleSphere(creepieSpawnPos, 50, 1.5F);
-                            break;
-                        }
-                    }
-                }
-                if (this.spawnCreepie != null && this.cloudTime % 20 == 0) {
-                    if (this.level().noCollision(this.spawnCreepie, this.spawnCreepie.getBoundingBox())) {
-                        this.level().addFreshEntity(this.spawnCreepie);
-                        this.setCloudSize(this.getCloudSize() - 1);
-                    }
-                    this.spawnCreepie = null;
-                }
+                this.tickLandedServer();
             }
         }
     }
 
-    private void spawnParticleSphere(Vec3 pos, int amount, float cloudSize) {
-        spawnParticleSphere(this, this.random, pos, amount, cloudSize);
+    /**
+     * Ticks that a cloud lingers after landing, before it starts counting down toward {@link #discard()}.
+     */
+    protected int getInitialCloudTime(int cloudSize) {
+        return 20 * cloudSize + 200;
+    }
+
+    /**
+     * Visual radius/density used for the landed particle sphere and the landing burst, independent of
+     * {@link #getCloudSize()}'s creepie-spawn budget so a subclass can keep a large spawn count without
+     * an oversized particle field.
+     */
+    protected float getVisualCloudSize() {
+        return this.getCloudSize();
+    }
+
+    /**
+     * Ticks between creepie spawn attempts while landed; confirmation happens at double this interval.
+     */
+    protected int getCreepieSpawnIntervalTicks() {
+        return 20;
+    }
+
+    /**
+     * Called every client tick while landed and not yet discarded.
+     */
+    protected void tickLandedClient() {
+        this.spawnParticleSphere(this.position(), 1, this.getVisualCloudSize());
+    }
+
+    /**
+     * Called every server tick while landed, with {@code cloudTime > 0} and {@code getCloudSize() > 0}.
+     */
+    protected void tickLandedServer() {
+        int interval = this.getCreepieSpawnIntervalTicks();
+        if (this.spawnCreepie == null && this.cloudTime % (interval / 2) == 0) {
+            int cloudSize = this.getCloudSize();
+            for (int i = 0; i < 4 * cloudSize; i++) {
+                float theta = (float) (this.random.nextFloat() * 2 * Math.PI);
+                float phi = (float) (this.random.nextFloat() * 2 * Math.PI);
+
+                double xPos = this.getX() + Mth.sin(phi) * Mth.cos(theta) * cloudSize * this.random.nextFloat();
+                double zPos = this.getZ() + Mth.cos(phi) * cloudSize * this.random.nextFloat();
+                double yPos = this.getY();
+
+                if (this.level().clip(new ClipContext(this.position(), new Vec3(xPos, yPos, zPos), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)).getType() == HitResult.Type.MISS) {
+                    Vec3 creepieSpawnPos = new Vec3(xPos, yPos, zPos);
+                    this.spawnCreepie = this.createCreepie(creepieSpawnPos);
+                    this.spawnParticleSphere(creepieSpawnPos, 50, 1.5F);
+                    break;
+                }
+            }
+        }
+        if (this.spawnCreepie != null && this.cloudTime % interval == 0) {
+            if (this.level().noCollision(this.spawnCreepie, this.spawnCreepie.getBoundingBox())) {
+                this.level().addFreshEntity(this.spawnCreepie);
+                this.setCloudSize(this.getCloudSize() - 1);
+            }
+            this.spawnCreepie = null;
+        }
+    }
+
+    /**
+     * Constructs and positions the creepie {@link #tickLandedServer()} places at {@code pos}.
+     */
+    protected Creepie createCreepie(Vec3 pos) {
+        Creepie creepie = new Creepie(this.level(), this.getOwner(), this.isPowered());
+        this.initializeCreepie(creepie);
+        creepie.setPos(pos);
+        return creepie;
+    }
+
+    protected void initializeCreepie(Creepie creepie) {
+        creepie.getBrain().setMemory(MemoryModuleType.ATTACK_TARGET, this.target);
+        creepie.setType(Creepie.CreepieType.NORMAL);
+    }
+
+    protected void spawnParticleSphere(Vec3 pos, int amount, float cloudSize) {
+        spawnParticleSphere(this, this.random, pos, amount, cloudSize, this.getSporeParticleType());
+    }
+
+    protected SimpleParticleType getSporeParticleType() {
+        return TCParticles.CREEPER_SPORES.get();
     }
 
     @Override
@@ -197,20 +253,28 @@ public class CreeperSpores extends ThrowableProjectile {
         builder.define(CLOUD_SIZE, 0);
     }
 
-    private boolean hasLanded() {
+    protected boolean hasLanded() {
         return this.entityData.get(LANDED);
     }
 
-    private boolean isPowered() {
+    protected boolean isPowered() {
         return this.entityData.get(POWERED);
     }
 
-    private int getCloudSize() {
+    protected int getCloudSize() {
         return this.entityData.get(CLOUD_SIZE);
     }
 
-    private void setCloudSize(int cloudTime) {
-        this.entityData.set(CLOUD_SIZE, cloudTime);
+    protected void setCloudSize(int cloudSize) {
+        this.entityData.set(CLOUD_SIZE, cloudSize);
+    }
+
+    protected int getCloudTime() {
+        return this.cloudTime;
+    }
+
+    protected void setCloudTime(int cloudTime) {
+        this.cloudTime = cloudTime;
     }
 
     private void setLanded() {

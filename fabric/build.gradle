@@ -1,6 +1,7 @@
 plugins {
     id 'multiloader-loader'
     id 'fabric-loom'
+    id 'maven-publish'
 }
 
 dependencies {
@@ -45,4 +46,20 @@ loom {
 
 publishMods {
     file = tasks.named("remapJar").flatMap { it.archiveFile }
+}
+
+publishing {
+    publications {
+        mavenFabric(MavenPublication) {
+            groupId = project.group
+            artifactId = "tolerable-creepers-fabric"
+            version = "${project.version}-local"
+            artifact(tasks.named("remapJar")) {
+                builtBy tasks.named("remapJar")
+            }
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
 }

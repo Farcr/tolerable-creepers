@@ -1,6 +1,7 @@
 plugins {
     id 'multiloader-loader'
     id 'net.neoforged.moddev'
+    id 'maven-publish'
 }
 
 neoForge {
@@ -51,4 +52,20 @@ dependencies {
 
 publishMods {
     file = tasks.named("jar").flatMap { it.archiveFile }
+}
+
+publishing {
+    publications {
+        mavenNeoforge(MavenPublication) {
+            groupId = project.group
+            artifactId = "tolerable-creepers-neoforge"
+            version = "${project.version}-local"
+            artifact(tasks.named("jar")) {
+                builtBy tasks.named("jar")
+            }
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
 }
