@@ -178,6 +178,14 @@ public class CreeperSpores extends ThrowableProjectile {
     }
 
     /**
+     * Radius within which {@link #tickLandedServer()} scatters creepie spawn points, independent of
+     * {@link #getCloudSize()}'s creepie-spawn budget.
+     */
+    protected float getSpawnRadius() {
+        return this.getCloudSize();
+    }
+
+    /**
      * Ticks between creepie spawn attempts while landed; confirmation happens at double this interval.
      */
     protected int getCreepieSpawnIntervalTicks() {
@@ -198,12 +206,13 @@ public class CreeperSpores extends ThrowableProjectile {
         int interval = this.getCreepieSpawnIntervalTicks();
         if (this.spawnCreepie == null && this.cloudTime % (interval / 2) == 0) {
             int cloudSize = this.getCloudSize();
+            float spawnRadius = this.getSpawnRadius();
             for (int i = 0; i < 4 * cloudSize; i++) {
                 float theta = (float) (this.random.nextFloat() * 2 * Math.PI);
                 float phi = (float) (this.random.nextFloat() * 2 * Math.PI);
 
-                double xPos = this.getX() + Mth.sin(phi) * Mth.cos(theta) * cloudSize * this.random.nextFloat();
-                double zPos = this.getZ() + Mth.cos(phi) * cloudSize * this.random.nextFloat();
+                double xPos = this.getX() + Mth.sin(phi) * Mth.cos(theta) * spawnRadius * this.random.nextFloat();
+                double zPos = this.getZ() + Mth.cos(phi) * spawnRadius * this.random.nextFloat();
                 double yPos = this.getY();
 
                 if (this.level().clip(new ClipContext(this.position(), new Vec3(xPos, yPos, zPos), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)).getType() == HitResult.Type.MISS) {
