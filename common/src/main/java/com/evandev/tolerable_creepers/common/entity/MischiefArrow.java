@@ -51,7 +51,7 @@ public class MischiefArrow extends AbstractArrow {
 
         if (hitResult.getType() != HitResult.Type.MISS) {
             Vec3 pos = hitResult.getLocation();
-            this.level().addFreshEntity(new CreeperSpores(this.level(), pos.x(), pos.y() + 0.01, pos.z(), 1, false));
+            this.level().addFreshEntity(new CreeperSpores(this.level(), pos.x(), pos.y() + 0.01, pos.z(), 1));
             this.discard();
         }
     }

@@ -68,8 +68,9 @@ public abstract class ExplosionMixin {
 
             int randomAdd = randomBound > 0 ? random.nextInt(randomBound) : 0;
             int sporeCount = Math.round((baseCount + randomAdd) * creeper.getHealth() / creeper.getMaxHealth());
+            if (creeper.isPowered()) sporeCount *= 2;
 
-            CreeperSpores creeperSpores = new CreeperSpores(level, creeper.getX(), creeper.getY() + 0.01, creeper.getZ(), sporeCount, creeper.isPowered());
+            CreeperSpores creeperSpores = new CreeperSpores(level, creeper.getX(), creeper.getY() + 0.01, creeper.getZ(), sporeCount);
             if (!creeper.isInvisible()) creeperSpores.setOwner(creeper);
 
             level.addFreshEntity(creeperSpores);

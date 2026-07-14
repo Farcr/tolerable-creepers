@@ -29,7 +29,6 @@ import org.jetbrains.annotations.Nullable;
 public class CreeperSpores extends ThrowableProjectile {
 
     private static final EntityDataAccessor<Boolean> LANDED = SynchedEntityData.defineId(CreeperSpores.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> POWERED = SynchedEntityData.defineId(CreeperSpores.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> CLOUD_SIZE = SynchedEntityData.defineId(CreeperSpores.class, EntityDataSerializers.INT);
 
     private Creepie spawnCreepie;
@@ -42,10 +41,9 @@ public class CreeperSpores extends ThrowableProjectile {
         this.entityData.set(CLOUD_SIZE, 2);
     }
 
-    public CreeperSpores(Level level, double x, double y, double z, int cloudSize, boolean powered) {
+    public CreeperSpores(Level level, double x, double y, double z, int cloudSize) {
         super(TCEntities.CREEPER_SPORES.get(), x, y, z, level);
         this.entityData.set(CLOUD_SIZE, cloudSize);
-        this.entityData.set(POWERED, powered);
     }
 
     public CreeperSpores(LivingEntity thrower, Level level, int cloudSize) {
@@ -236,7 +234,7 @@ public class CreeperSpores extends ThrowableProjectile {
      * Constructs and positions the creepie {@link #tickLandedServer()} places at {@code pos}.
      */
     protected Creepie createCreepie(Vec3 pos) {
-        Creepie creepie = new Creepie(this.level(), this.getOwner(), this.isPowered());
+        Creepie creepie = new Creepie(this.level(), this.getOwner());
         this.initializeCreepie(creepie);
         creepie.setPos(pos);
         return creepie;
@@ -258,16 +256,11 @@ public class CreeperSpores extends ThrowableProjectile {
     @Override
     protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         builder.define(LANDED, false);
-        builder.define(POWERED, false);
         builder.define(CLOUD_SIZE, 0);
     }
 
     protected boolean hasLanded() {
         return this.entityData.get(LANDED);
-    }
-
-    protected boolean isPowered() {
-        return this.entityData.get(POWERED);
     }
 
     protected int getCloudSize() {
@@ -300,7 +293,6 @@ public class CreeperSpores extends ThrowableProjectile {
         super.addAdditionalSaveData(nbt);
         nbt.putInt("CloudSize", this.getCloudSize());
         nbt.putInt("CloudTime", this.cloudTime);
-        nbt.putBoolean("Powered", this.isPowered());
     }
 
     @Override
@@ -312,6 +304,5 @@ public class CreeperSpores extends ThrowableProjectile {
             this.cloudTime = nbt.getInt("CloudTime");
             this.setLanded();
         }
-        this.entityData.set(POWERED, nbt.getBoolean("Powered"));
     }
 }

@@ -13,7 +13,6 @@ public class CreepieRenderer extends MobRenderer<Creepie, CreepieModel<Creepie>>
 
     public CreepieRenderer(EntityRendererProvider.Context context) {
         super(context, new CreepieModel<>(context.bakeLayer(CreepieModel.LAYER_LOCATION)), 0.25F);
-        this.addLayer(new CreepiePowerLayer(this, context.getModelSet()));
     }
 
     @Override

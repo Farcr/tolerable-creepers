@@ -16,7 +16,7 @@ public class ModConfig {
     private static ModConfig INSTANCE;
 
     public boolean preventCreeperBlockDamage = true;
-    public int creepieExplosionRadius = 2;
+    public int creepieExplosionRadius = 1;
 
     public int sporeCountDayBase = 1;
     public int sporeCountDayRandom = 2;

@@ -89,7 +89,7 @@ public class SporeBomb extends ThrowableBombEntity {
         }
 
         this.level().explode(this, this.getX(), this.getY(0.0625), this.getZ(), 1.0F, Level.ExplosionInteraction.NONE);
-        CreeperSpores spores = new CreeperSpores(this.level(), this.getX(), yPos + 0.01, this.getZ(), 1 + this.random.nextInt(2), false);
+        CreeperSpores spores = new CreeperSpores(this.level(), this.getX(), yPos + 0.01, this.getZ(), 1 + this.random.nextInt(2));
         if (!(this.getOwner() instanceof LivingEntity livingEntity) || !livingEntity.hasEffect(MobEffects.INVISIBILITY)) {
             spores.setOwner(this.getOwner());
         }

@@ -25,7 +25,6 @@ public class TolerableCreepersFabricClient implements ClientModInitializer {
         ParticleFactoryRegistry.getInstance().register(TCParticles.CREEPER_SPORES.get(), CreeperSporesParticle.Provider::new);
 
         EntityModelLayerRegistry.registerModelLayer(CreepieModel.LAYER_LOCATION, CreepieModel::createBodyLayer);
-        EntityModelLayerRegistry.registerModelLayer(CreepieModel.LAYER_LOCATION_ARMOR, CreepieModel::createBodyLayer);
 
         EntityRendererRegistry.register(TCEntities.CREEPER_SPORES.get(), NoopRenderer::new);
         EntityRendererRegistry.register(TCEntities.CREEPIE.get(), CreepieRenderer::new);

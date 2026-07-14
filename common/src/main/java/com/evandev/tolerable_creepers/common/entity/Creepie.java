@@ -2,7 +2,6 @@ package com.evandev.tolerable_creepers.common.entity;
 
 import com.evandev.tolerable_creepers.Constants;
 import com.evandev.tolerable_creepers.config.ModConfig;
-import com.evandev.tolerable_creepers.core.extension.CreeperExtension;
 import com.evandev.tolerable_creepers.core.mixin.accessor.CreeperAccessor;
 import com.evandev.tolerable_creepers.core.registry.TCEntities;
 import com.evandev.tolerable_creepers.core.registry.TCItems;
@@ -129,10 +128,9 @@ public class Creepie extends Creeper {
         ((CreeperAccessor) this).setExplosionRadius(ModConfig.get().creepieExplosionRadius);
     }
 
-    public Creepie(Level level, @Nullable Entity owner, boolean powered) {
+    public Creepie(Level level, @Nullable Entity owner) {
         this(TCEntities.CREEPIE.get(), level);
         this.setOwner(owner);
-        ((CreeperExtension) this).tolerablecreepers$setPowered(powered);
         this.updateState();
     }
 
